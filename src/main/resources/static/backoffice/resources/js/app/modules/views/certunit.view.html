@@ -1,0 +1,210 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Certificacion de Unidades</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-1"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Imei</th>
+                                <th class="textLeft">Fecha Creacion</th>
+                                <th class="textLeft">Tipo Dispositivo</th>
+                                <th class="textLeft">Ultima Actividad</th>
+                                <th class="textLeft">Fecha Validacion GPS</th>
+                                <th class="textLeft">administrar</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="unit in unitCert">
+                                <td align="left">
+                                    {{ unit._m || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.creationDate | date: 'yyyy-MM-dd HH:mm' || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.deviceTypeName || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.lastActivityDate | date: 'yyyy-MM-dd HH:mm' || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.validateDeviceDate | date: 'yyyy-MM-dd HH:mm' || "por definir"}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Certificar" tooltip-placement="top" ng-click="certUnit(unit)">
+                                            <span class="glyphicon glyphicon-signal" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Informacion de la Unidad -->
+<modal title="Certificar Unidad" visible="showModalCertUnit" style="width: 60%; margin-left: 20%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-6"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in aletErrorCompany" ng-show="showAletErrorCompany" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in aletErrorSaveInfo" ng-show="showErrorSaveInfo" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="form-group" align="center">
+            <label><h4>Dispositivo: <strong>{{dataModalCertUnit.deviceName}}</strong> | Imei: <strong>{{dataModalCertUnit.deviceImei}}</strong></h4></label>
+        </div>
+        <div class="col-md-12">
+            <form novalidate>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="header-info-unit textCenter">Evento a Validar</th>
+                            <th class="header-info-unit textCenter">Accesorio Relacionado</th>
+                            <th class="header-info-unit textCenter">Certificado</th>
+                            <th class="header-info-unit textCenter">Estado Validacion</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="eventName in eventCert">
+                        <td class="col-xs-3 col-sm-3 col-md-3" align="center">{{eventName.eventName}}</td>
+                        <td class="col-xs-3 col-sm-3 col-md-3 active" align="center">{{eventName.accesoryName|| "S/I"}}</td>
+                        <td class="col-xs-3 col-sm-3 col-md-3" align="left">
+                            <switch id="certEventsId" name="certEvents" ng-model="eventName.enabled" disabled="true" class="green"></switch>
+                        </td>
+                        <td class="col-xs-4 col-sm-4 col-md-4 textCenter" align="left">{{eventName.validation}}</td>
+                    </tr>
+                </table>
+            </form>
+            <form ng-if="selectCompany" name="insertParameters" novalidate>
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter"><strong>Asignar Empresa</strong></h3>
+                </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre Unidad:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitName" class="form-control" ng-model="dataModalCertUnit.name" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitName.$error.required">
+                                        Debe ingresar el nombre de la unidad
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Patente:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="plateNumber" class="form-control" ng-model="dataModalCertUnit.plateNumber" size="20">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Vin:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="vin" class="form-control" ng-model="dataModalCertUnit.vin" size="20">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Seleccionar Empresa:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <ui-select name="customer" allow-clear ng-model="dataModalCertUnit.companySelected" theme="bootstrap" required>
+                                    <ui-select-match placeholder="Busque una empresa en la lista ...">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerCert in customerGroupCert | filter: $select.search | limitTo: limitCustomerSearch">
+                                        <div ng-bind-html="customerCert.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>  
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.customer.$error.required">
+                                        Debe ingresar la empresa
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo de Venta:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <select name="unitTypeSale" ng-model="dataModalCertUnit.unitTypeSale" class="form-control" 
+                                        ng-options="modalidad.id as modalidad.reason for modalidad in modalidadGroup">
+                                </select>                             
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Empresa Facturar:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <ui-select name="customerFact" allow-clear ng-model="dataModalCertUnit.companyFactSelected" theme="bootstrap">
+                                    <ui-select-match placeholder="Busque una empresa en la lista ...">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerFactCert in customerFactGroupCert | filter: $select.search | limitTo: limitCustomerSearch">
+                                        <div ng-bind-html="customerFactCert.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>  
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right margin-left-10" ng-disabled="insertParameters.$invalid" ng-click="certificate()" disabled>
+                        <span>Certificar</span>
+                    </button>
+                </div>
+            </form>
+            <div class="form-group" ng-if="eventTrue">
+                <button type="button" class="btn btn-primary pull-right" ng-click="validate()">
+                    <span>Validar Unidad</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</modal>

@@ -1,0 +1,66 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Administración Perfiles de Usuarios</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+<uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-7"></span>
+<div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="panel-heading header-info-unit">
+        <h3 class="panel-title textCenter">Usuario a Perfilar</h3>
+    </div>
+    <form name="userBackofficeName" novalidate>
+        <table class="table table-bordered col-xs-12 col-sm-12 col-md12">
+            <tr>
+                <td class="active col-sm-4 col-md-4 textRight"><strong>Ingrese Usuario para asignar Perfil</strong></td>
+                <td class="col-xs-7 col-sm-7 col-md-7">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <input type="text" name="userNameProfile" ng-model="userNameProfile" class="form-control" size="20" required>
+                        <div class="error-container">
+                            <small class="text-muted" ng-show="userBackofficeName.userNameProfile.$error.required">
+                                Debe ingresar el nombre de usuario
+                            </small>
+                        </div> 
+                    </div>
+                </td>
+                <td>
+                    <button ng-click="updateProfileForUser()" type="button" class="btn btn-primary" ng-disabled="userBackofficeName.$invalid"><img src="backoffice/resources/images/analisisperfil.png"  height="25" width="25"/>&nbsp;Asignar Perfil</button>
+                </td>
+            </tr>                            
+        </table>
+
+    </form>
+</div>
+<div class="col-sm-6 col-md-6 col-lg-6" ng-repeat="enableProfiles in profilesUser.profiles">
+    <div class="panel-heading header-info-unit">
+        <h3 class="panel-title textCenter">{{enableProfiles.description}}</h3>
+    </div>
+    <table class="table table-bordered">
+        <thead class="textCenter">
+            <tr>
+                <td class="active"><strong>Descripcion</strong></td>
+                <td class="active"><strong>Habilitar</strong></td>
+            </tr>
+        </thead>
+        <tbody data-ng-repeat="child in enableProfiles.childs">
+            <tr>
+                <td class="active col-sm-6 col-md-6 textRight">{{child.description}}</td>
+                <td class="col-xs-6 col-sm-6 col-md-6" style="text-align: center">
+                    <input type="checkbox" ng-model="child.active">
+                </td>
+            </tr>  
+        </tbody>
+    </table>
+</div>
+

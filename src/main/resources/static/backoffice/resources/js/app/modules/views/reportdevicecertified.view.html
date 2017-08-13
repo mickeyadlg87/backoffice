@@ -1,0 +1,76 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Reporte de dispositivos certificados</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertError" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-1"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Imei</th>
+                                <th class="textLeft">Usuario certificador</th>
+                                <th class="textLeft">Fecha certificación</th>
+                                <th class="textLeft">Accesorios</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="devCertified in devCertifiedViewReport">
+                                <td align="left">
+                                    {{ devCertified.imei || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ devCertified.username || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ devCertified.validationDate | date: 'yyyy-MM-dd HH:mm' || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ devCertified.accesoriesStringList || "sin accesorios"}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,416 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Administración de Usuarios</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateWeek" ng-show="showAletErrorWeek" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateMonth" ng-show="showAletErrorMonth" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsSendEmail" ng-show="showAlertSendEmail" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDate" ng-show="showAlertErrorDateSelected" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-1"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Rut</th>
+                                <th class="textLeft">Nombre</th>
+                                <th class="textLeft">Apellido</th>
+                                <th class="textLeft">Usuario</th>
+                                <th class="textLeft">Telefono</th>
+                                <th class="textLeft">e-mail</th>
+                                <th class="textCenter">Administrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="user in users">
+                                <td align="left">
+                                    {{ user.rut || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ user.name}}
+                                </td>
+                                <td align="left">
+                                    {{ user.lastName}}
+                                </td>
+                                <td align="left">
+                                    {{ user.userName}}
+                                </td>
+                                <td align="left">
+                                    {{ user.phone || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ user.email || "por definir"}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center margin-left-10" data-toggle="tooltip" uib-tooltip="Configurar" tooltip-placement="top" ng-click="configProfileUser(user)">
+                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                        </button> 
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Editar" tooltip-placement="top" ng-click="editUser(user)">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </button> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modificacion perfilamiento por usuario-->
+<modal title="Perfilamiento Usuario" visible="showModalProfileConfigUser" style="width: 80%; margin-left: 10%;">
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <form name="ProfileByUser">
+                <table class="table table-hover table-condensed table-striped">
+                    <thead class="header-info-unit">
+                        <tr>
+                            <th>Titulo</th>
+                            <th>Descripcion</th>
+                            <th>Usuario</th>
+                            <th>Plataforma</th>
+                            <th align="center">Hab/Inhab</th>
+                        </tr>
+                    </thead>
+                    <tbody data-ng-repeat="enableProfiles in profileModel.profiles">
+                        <tr id="enableProfiles.index">
+                            <td class="clickableRow" data-ng-click="selectTableMenuRow($index, enableProfiles.index)">
+                                <i class="glyphicon" ng-class="{'glyphicon-chevron-down': !menuDataCollapse[$index], 'glyphicon-chevron-right': menuDataCollapse[$index]}"></i>
+                                {{enableProfiles.title}}
+                            </td>
+                            <td>{{enableProfiles.description}}</td>
+                            <td>{{enableProfiles.user}}</td>
+                            <td>{{enableProfiles.realm}}</td>
+                            <td>
+                                <button type="button" ng-click="checkedAllChild(enableProfiles.index)" class="btn btn-info btn-xs" data-toggle="tooltip" uib-tooltip="Habilitar Funciones" tooltip-placement="bottom" ng-disabled="enableProfiles.index == 2 || enableProfiles.index == 5">
+                                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" ng-click="uncheckedSelectedChild(enableProfiles.index)" class="btn btn-info btn-xs" data-toggle="tooltip" uib-tooltip="Inhabilitar Funciones" tooltip-placement="bottom" ng-disabled="enableProfiles.index == 2 || enableProfiles.index == 5">
+                                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">&nbsp;</td>
+                            <td colspan="4">
+                                <div uib-collapse="menuDataCollapse[$index]">                                    
+                                    <div>
+                                        <table class="table table-hover table-condensed table-striped">
+                                            <thead class="header-info-unit">
+                                                <tr>
+                                                    <th>Descripcion</th>
+                                                    <th>Habilitar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody data-ng-repeat="mainMenu in enableProfiles.childs">
+                                                <tr>
+                                                    <td>{{mainMenu.description}}</td>
+                                                    <td ng-if="mainMenu.childs.length < 1 || mainMenu.state == 'transManager.enabled'">
+                                                        <input type="checkbox" ng-model="mainMenu.active">
+                                                    </td>
+                                                    <td ng-if="mainMenu.childs.length > 0 && mainMenu.state != 'transManager.enabled'">
+                                                        <button type="button" class="btn btn-primary btn-xs pull-left" data-toggle="tooltip" uib-tooltip="Mostrar/Ocultar" tooltip-placement="right" ng-click="verSubMenuClickMapa(submenuClickOnMap)">
+                                                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                                                        </button> 
+                                                    </td>
+                                                </tr>
+                                                <tr ng-if="submenuClickOnMap && mainMenu.childs.length > 0">
+                                                    <td colspan="2">
+                                                        <div>
+                                                            <table class="table table-hover table-condensed table-striped">
+                                                                <thead class="header-info-unit">
+                                                                    <tr>
+                                                                        <th>Opción en el Mapa</th>
+                                                                        <th>Habilitar</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody data-ng-repeat="optionMap in mainMenu.childs">
+                                                                <td>{{optionMap.description}}</td>
+                                                                <td><input type="checkbox" ng-model="optionMap.active"></td>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="updateProfileUser()" ng-disabled="false">
+                        <span>Actualizar</span>
+                    </button>
+                </div>                
+            </form>                            
+        </div>        
+    </div>    
+</modal>
+
+<!-- Editar usuario-->
+<modal title="Editar Usuario" visible="showModalEditUser" style="width: 50%; margin-left: 25%;">
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <form name="updateUser" novalidate>
+                <div class="form-group">
+                    <label>Rut</label>
+                    <input type="text" name="userRut" class="form-control" ng-model="dataModal.userRut" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.userRut.$error.required">
+                            Debe ingresar el rut del usuario
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" name="userName" class="form-control" ng-model="dataModal.userUserName" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.userName.$error.required">
+                            Debe ingresar el nombre del usuario
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" name="userLastName" class="form-control" ng-model="dataModal.userLastName" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.userLastName.$error.required">
+                            Debe ingresar el apellido del usuario
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre Usuario</label>
+                    <input type="text" name="nameUser" class="form-control" ng-model="dataModal.nameUser" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.nameUser.$error.required">
+                            Debe ingresar el usuario
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Telefono</label>
+                    <input type="text" name="userNumberPhone" class="form-control" ng-model="dataModal.userPhone" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.userNumberPhone.$error.required">
+                            Debe ingresar el numero de telefono
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>e-mail</label>
+                    <div class="input-group">
+                        <input type="text" name="userEmail" class="form-control" ng-model="dataModal.userEmail" placeholder="ejemplo@reddsystem.com" 
+                               validator-mails="{{dataModal.userEmail}}" size="20" required>
+                        <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                    </div>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.userEmail.$error.required">
+                            Debe ingresar al menos un correo electr&oacutenico
+                        </small>
+                        <small class="text-muted" ng-show="updateUser.userEmail.$error.validatorMails">
+                            El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Paquete Funcional</label>
+                    <select name="planPack" ng-model="dataModal.funPackageId" class="form-control" ng-disabled="!dataModal.changeProfile" required>
+                        <option ng-repeat="plan in functionalPackageList" value="{{plan.id}}">{{plan.name}}</option>
+                    </select>
+                    <label>Actualizar Paquete Funcional &nbsp;&nbsp;&nbsp;</label>
+                    <input type="checkbox" ng-model="dataModal.changeProfile" ng-init="dataModal.changeProfile = false">
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateUser.planPack.$error.required">
+                            Debe seleccionar un paquete funcional
+                        </small>
+                    </div>
+                </div>             
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="updateUserFunction()" ng-disabled="updateUser.$invalid">
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<!-- Adicionar Usuario -->
+<modal title="Adicionar Usuario" visible="showModalAddUser" style="width: 50%; margin-left: 25%; top: 5%; bottom: 5%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-10"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <form name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre Usuario:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="userName" class="form-control" ng-model="dataModalInsert.userName" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.userName.$error.required">
+                                        Debe ingresar el nombre de usuario
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Rut:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="rut" class="form-control" ng-model="dataModalInsert.rut" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.rut.$error.required">
+                                        Debe ingresar la contraseña
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="name" class="form-control" ng-model="dataModalInsert.name" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.name.$error.required">
+                                        Debe ingresar el nombre
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Apellido:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="lastName" class="form-control" ng-model="dataModalInsert.lastName" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.lastName.$error.required">
+                                        Debe ingresar el apellido
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="phone" class="form-control" ng-model="dataModalInsert.phone" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.phone.$error.required">
+                                        Debe ingresar el telefono
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>E-mail:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="email" class="form-control" ng-model="dataModalInsert.email" placeholder="ejemplo@reddsystem.com" 
+                                       validator-mails="{{dataModalInsert.email}}" size="20" required >
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.email.$error.required">
+                                        Debe ingresar el e-mail
+                                    </small>
+                                    <small class="text-muted" ng-show="insertParameters.email.$error.validatorMails">
+                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Empresa:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="companyName" class="form-control" ng-model="dataModalInsert.companyName" size="20" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Paquete Funcional:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <select name="functionalPack" ng-model="dataModalInsert.functionalPackSel" class="form-control" required>
+                                    <option ng-repeat="funPack in functionalPackageList" value="{{funPack}}">{{funPack.name}}</option>
+                                </select> 
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.functionalPack.$error.required">
+                                        Debe seleccionar un paquete funcional
+                                    </small>
+                                </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="insertRowUser()" ng-disabled="insertParameters.$invalid">
+                                    <span>Crear Usuario</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr> 
+                </table>
+            </form>
+        </div>
+    </div>
+</modal>
+
+

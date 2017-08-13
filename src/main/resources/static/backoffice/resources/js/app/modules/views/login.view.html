@@ -1,0 +1,167 @@
+<style>
+
+    #mainnav{
+        display:none;
+    }
+
+    body
+    {
+        background: url('backoffice/resources/images/fondo-login.png') fixed;
+        background-size: cover;
+        padding: 0;
+        margin: 0;
+    }
+
+    .wrap
+    {
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        position: absolute;
+        margin-top: 10%;
+        top: 0;
+        left: 0;
+        z-index: 99;
+    }
+
+    /*donde debe ir imagen redd*/
+    p.form-title
+    {
+        font-family: 'Open Sans' , sans-serif;
+        font-size: 30px;
+        font-weight: 600;
+        text-align: center;
+        color: #FFFFFF;
+        margin-top: 5%;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+    }
+
+    form
+    {
+        width: 300px;
+        margin: 0 auto;
+    }
+
+    form.login input[type="text"], form.login input[type="password"]
+    {
+        width: 100%;
+        margin: 0;
+        padding: 5px 10px;
+        background: 0;
+        background-color: #fff;
+        border: 0;
+        border-bottom: 2px solid #FFFFFF;
+        outline: 0;
+        font-style: italic;
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        color: #000000;
+        outline: 0;
+    }
+
+    form.login .forgot-pass-content
+    {
+        min-height: 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    form.login label, form.login a
+    {
+        font-size: 12px;
+        font-weight: 400;
+        color: #FFFFFF;
+    }
+
+    form.login a
+    {
+        transition: color 0.5s ease;
+    }
+
+    form.login a:hover
+    {
+        color: #db032b;
+    }
+
+    .pr-wrap
+    {
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        display: none;
+    }
+
+    .button {
+        display: inline-block;
+        background: #db032b;
+        -webkit-box-shadow: 0px 1px 0px 0px #ff8272 inset, 0px 0px 0px 1px #e6e6e6;
+        -moz-box-shadow: 0px 1px 0px 0px #ff8272 inset, 0px 0px 0px 1px #e6e6e6;
+        box-shadow: 0px 1px 0px 0px #ff8272 inset, 0px 0px 0px 1px #e6e6e6;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+        -webkit-transition: all 0s 0;
+        -moz-transition: all 0s 0;
+        -o-transition: all 0s 0;
+        transition: all 0s 0;
+        text-shadow: 0px 1px 1px #9c3528;
+        padding: 6px 30px;
+        border-color: #ec513c;
+        border-width: 0px;
+        border-style: solid;
+        font-family: Arial, Helvetica, Sans-serif;
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: bold;
+        margin-top: 5%;
+    }
+    .button:hover {
+        background: #ff0433;
+        -webkit-box-shadow: 0px 0px 0px 1px #ffbfab;
+        -moz-box-shadow: 0px 0px 0px 1px #ffbfab;
+        box-shadow: 0px 0px 0px 1px #ffbfab;
+        border-color: #ed5e4b;
+    }
+
+    .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url('backoffice/resources/images/loaded.gif') 50% 50% no-repeat;
+
+    }
+    .backColor {
+        background-color: rgb(255,255,255);
+        opacity: 0.5;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="wrap">
+                <p class="form-title">
+                    <img style="margin-top: -5%;" height="27%" width="30%" src="backoffice/resources/images/redd.png"/>
+                </p>
+                <form class="login" ng-submit="login()" class="form-signin">
+                    <input type="text" class="form-control" id="username" name="username" ng-model="credentials.username" placeholder="Nombre de usuario" required="" autofocus="" />
+                    <input type="password" class="form-control" id="password" name="password" ng-model="credentials.password" placeholder="Contraseña" required=""/>     		  
+                    <button class="button"  name="Submit" value="Login" type="Submit">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="backColor loader" ng-show="success"></div>

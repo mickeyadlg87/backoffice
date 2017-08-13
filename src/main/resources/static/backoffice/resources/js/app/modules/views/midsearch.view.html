@@ -1,0 +1,279 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Busqueda de Unidades por Imei</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-7"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12 col-md-12 col-lg-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Información</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Informacion General (Metadata)</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Patente:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.rslite.metadata.plateNumber || "S/I"}}</td>
+                                            </tr>           
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Empresa:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.rslite.metadata.company || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Vin:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.rslite.metadata.vin || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Simcard:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.rslite.metadata.simcard || "S/I"}}</td>
+                                            </tr>                                            
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Informacion Last Position </h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Fecha de última actividad:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{(unidadLastState.date | date:'yyyy-MM-dd HH:mm:ss Z') || "S/I"}}</td>
+                                            </tr>                            
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Latitud:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.lat || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Longitud:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.lng || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Horometro:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.hourmeter || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Odometro:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.odo}}</td>
+                                            </tr>                                            
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Velocidad (Km/h):</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.speed}}</td>
+                                            </tr>                                            
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Geotexto:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.geotext || "S/I"}}</td>
+                                            </tr>                                            
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Id evento:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadLastState.eventId}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>                       
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Ultima Ubicación </h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <openlayers class="map mapView" ol-center="center" id="map" ol-defaults="mapConfig" ol-markers="marker">
+                                                <ol-layer ol-layer-properties="layer"></ol-layer>
+                                                <ol-marker ol-marker-properties="marker"></ol-marker>
+                                            </openlayers>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Ultima informacion</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultima Fecha:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{(unidadImei.lastDate | date:'yyyy-MM-dd HH:mm:ss Z') || "S/I"}}</td>
+                                            </tr>           
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultimo driver:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastDriver || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultimo Id:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastId || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultimo Modelo:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastModel || "S/I"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultima Ip:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastReportingIp || "S/I"}}</td>
+                                            </tr> 
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultimo Puerto:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastReportingPort || "S/I"}}</td>
+                                            </tr> 
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultma Ip de Origen:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastSourceIp || "S/I"}}</td>
+                                            </tr> 
+                                            <tr>
+                                                <td class="active col-sm-3 col-md-3 textRight"><strong>Ultmo Puerto de Origen:</strong></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{unidadImei.lastSourcePort || "S/I"}}</td>
+                                            </tr>                                             
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Sensores</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <tr ng-repeat="sensors in unidadImei.arraySensor">
+                                                <td class="col-sm-3 col-md-3 textRight">{{sensors.name || "S/I"}}</td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{sensors.quantity || "S/I"}}</td>
+                                            </tr>           
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Version</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <tr ng-repeat="version in unidadImei.arrayVersion">
+                                                <td class="col-sm-3 col-md-3 textRight">{{version.name || "S/I"}}</td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{version.data || "S/I"}}</td>
+                                            </tr>           
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Listado de Eventos</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <td class="active col-sm-3 col-md-3 textCenter">Id Evento</td>
+                                            <td class="active col-sm-3 col-md-3 textCenter">Fecha Evento</td>
+                                            <tr ng-repeat="event in unidadImei.listaEventos">
+                                                <td class="col-sm-3 col-md-3 textRight"><small>({{event.eventId}}) {{event.eventName}}</small></td>
+                                                <td class="col-sm-3 col-md-3 textLeft">{{(event.time | date:'yyyy-MM-dd HH:mm:ss Z') || "S/I"}}</td>
+                                            </tr>                            
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>                       
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Flotas</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Id Grupo</strong></td>
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Nombre Empresa</strong></td>
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Nombre Flota</strong></td>
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Rut empresa</strong></td>
+                                            <tr ng-repeat="fleet in unidadImei.rslite.fleet">
+                                                <td class="col-sm-3 col-md-3 textCenter">{{fleet.id_grupo}}</td>
+                                                <td class="col-sm-3 col-md-3 textCenter">{{fleet.nombre_empresa}}</td>
+                                                <td class="col-sm-3 col-md-3 textCenter">{{fleet.nombre_grupo}}</td>
+                                                <td class="col-sm-3 col-md-3 textCenter">{{fleet.rut_empresa}}</td>
+                                            </tr>                                            
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="panel-heading header-info-unit">
+                                            <h3 class="panel-title textCenter">Geocercas</h3>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Id</strong></td>
+                                            <td class="active col-sm-3 col-md-3 textCenter"><strong>Nombre</strong></td>
+                                            <tr ng-repeat="geofence in unidadImei.rslite.geofence">
+                                                <td class="col-sm-3 col-md-3 textCenter">{{geofence.id}}</td>
+                                                <td class="col-sm-3 col-md-3 textCenter">{{geofence.name}}</td>
+                                            </tr>                            
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1511 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Administración de Clientes</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateWeek" ng-show="showAletErrorWeek" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateMonth" ng-show="showAletErrorMonth" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsSendEmail" ng-show="showAlertSendEmail" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDate" ng-show="showAlertErrorDateSelected" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-1"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Rut</th>
+                                <th class="textLeft">Nombre</th>
+                                <th class="textLeft">e-mail</th>
+                                <th class="textLeft">Direccion</th>
+                                <th class="textLeft">Fecha Creacion</th>
+                                <th class="textCenter">Modificar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="company in companies">
+                                <td align="left">
+                                    {{ company.rut}}
+                                </td>
+                                <td align="left">
+                                    {{ company.name}}
+                                </td>
+                                <td align="left">
+                                    {{ company.email || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ company.address || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ company.creationDate | date: 'yyyy-MM-dd'}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-right" ng-click="editCompany(company)" ng-disabled="disableButtonSearch">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Modificar
+                                        </button> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INICIO actualizar informacion a un cliente -->
+<modal title="Modificar Clientes" visible="showModalModifyClient" style="width: 60%; margin-left: 20%; top: 5%; bottom: 5%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-2"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-group" id="accordTwo">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarDatosComerciales"><span class="glyphicon glyphicon-briefcase">
+                                </span>  Datos Comerciales</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarDatosComerciales" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <form name="updateParameters" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyName" class="form-control" ng-model="dataModal.customerName" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyName.$error.required">
+                                                        Debe ingresar nombre de la empresa
+                                                    </small>
+                                                </div>                                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Alias:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyAlias" class="form-control" ng-model="dataModal.customerAlias" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyAlias.$error.required">
+                                                        Debe ingresar el alias de la empresa
+                                                    </small>
+                                                </div>                                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Rut:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyRut" class="form-control" ng-model="dataModal.rut" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyRut.$error.required">
+                                                        Debe ingresar el RUT de la empresa
+                                                    </small>
+                                                </div>                                
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Razon Social:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyBusinessName" class="form-control" ng-model="dataModal.businessName" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyBusinessName.$error.required">
+                                                        Debe ingresar la razon social
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>  
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Giro:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyGiro" class="form-control" ng-model="dataModal.giro" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyGiro.$error.required">
+                                                        Debe ingresar el giro
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Segmento:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companySegment" class="form-control" ng-model="dataModal.segment" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companySegment.$error.required">
+                                                        Debe ingresar el segmento
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Mercado:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyMercado" class="form-control" ng-model="dataModal.market" size="20" required="">
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyMercado.$error.required">
+                                                        Debe ingresar el mercado
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Sitio Web:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyWeb" class="form-control" ng-model="dataModal.webPage" size="20" required="">
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyWeb.$error.required">
+                                                        Debe ingresar el sitio web
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Direccion Comercial:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyAddress" class="form-control" ng-model="dataModal.address" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyAddress.$error.required">
+                                                        Debe ingresar la direccion comercial
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Maximo de vehiculos:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="companyMaxVehicles" class="form-control" ng-model="dataModal.companyMaxVehicles" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyMaxVehicles.$error.required">
+                                                        Debe ingresar el maximo de vehiculos
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParameters.companyMaxVehicles.$error.min">
+                                                        El maximo de vehiculos debe ser mayor o igual a cero.
+                                                    </small>
+                                                </div>                         
+                                            </div>
+                                        </td>
+                                    </tr>   
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Maximo de usuarios por empresa:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="companyMaxUsers" class="form-control" ng-model="dataModal.companyMaxUsers" min="0" max="400" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.companyMaxUsers.$error.required">
+                                                        Debe ingresar el maximo de usuarios por empresa
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParameters.companyMaxUsers.$error.min">
+                                                        El maximo de usuarios debe ser mayor o igual a cero.
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParameters.companyMaxUsers.$error.max">
+                                                        El maximo de usuarios no debe ser mayor a 400.
+                                                    </small>
+                                                </div>                        
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Generar Cartola Semanal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                                <input type="checkbox" ng-model="dataModal.companyWeeklyReport" ng-true-value=1 ng-false-value=0>
+                                            </div>
+                                        </td>
+                                    </tr>  
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Reseller:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                <input type="checkbox" ng-model="dataModal.chekReseller" ng-change="changeStateEdit()">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="resellerTrue">
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Seleccionar Empresa:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <ui-select name="customer" allow-clear ng-model="dataModal.companyReseller" theme="bootstrap" ng-disabled="disabledCompany" required>
+                                                    <ui-select-match placeholder="Seleccione una empresa de la lista ...">{{$select.selected.name}}</ui-select-match>
+                                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerEdit in customerGroupEdit | filter: $select.search | limitTo: limitCustomerSearch">
+                                                        <div ng-bind-html="customerEdit.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>  
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParameters.customer.$error.required">
+                                                        Debe seleccionar la empresa reseller
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarEjecutivo"><span class="glyphicon glyphicon-phone">
+                                </span>  Datos Ejecutivo Comercial</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarEjecutivo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersEjecutive" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutiveName" class="form-control" ng-model="dataModal.executive" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersEjecutive.ejecutiveName.$error.required">
+                                                        Debe ingresar nombre del ejecutivo
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutiveType" class="form-control" ng-model="dataModal.executiveType" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutivePhone" class="form-control" ng-model="dataModal.executivePhone" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Anexo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="ejecutiveAnex" class="form-control" ng-model="dataModal.executiveAnnex" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="ejecutiveEmail" ng-model="dataModal.executiveMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.ejecutiveEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div> 
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersEjecutive.ejecutiveEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParametersEjecutive.ejecutiveEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarPagos"><span class="glyphicon glyphicon-usd">
+                                </span>  Datos Pago Proveedores</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarPagos" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersProveedor" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre Contacto:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorName" class="form-control" ng-model="dataModal.supplierName" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersProveedor.proveedorName.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorPrincipalPhone" class="form-control" ng-model="dataModal.supplierPhone" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersProveedor.proveedorPrincipalPhone.$error.required">
+                                                        Debe ingresar el telefono
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorSecondaryPhone" class="form-control" ng-model="dataModal.supplierPhoneTwo" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorjobTitle" class="form-control" ng-model="dataModal.supplierJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="proveedorEmail" ng-model="dataModal.supplierMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.proveedorEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersProveedor.proveedorEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParametersProveedor.proveedorEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Condicion Pago:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="Dias" name="proveedorCondition" class="form-control" ng-model="dataModal.paymentCondition" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersProveedor.proveedorCondition.$error.required">
+                                                        Debe ingresar la condicion de pago
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Requiere OC:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                                <input type="checkbox" ng-model="dataModal.oc" ng-true-value=1 ng-false-value=0>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Liberación de OC:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorOCLiberation" class="form-control" ng-model="dataModal.supplierLiberationOC" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarCliente"><span class="glyphicon glyphicon-user">
+                                </span>  Datos Representante</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarCliente" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersClient " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientName" class="form-control" ng-model="dataModal.tradeContactName" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersClient.clientName.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientPrincipalPhone" class="form-control" ng-model="dataModal.tradeContactPhone" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersClient.clientPrincipalPhone.$error.required">
+                                                        Debe ingresar telefono de contacto
+                                                    </small>
+                                                </div>                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientSecondaryPhone" class="form-control" ng-model="dataModal.tradeContactPhoneTwo" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientJobTitle" class="form-control" ng-model="dataModal.tradeContactJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="companyEmail" ng-model="dataModal.tradeContactMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModal.companyEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersClient.companyEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParametersClient.companyEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>                        
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarCondicionesComerciales"><span class="glyphicon glyphicon-thumbs-up">
+                                </span>  Condiciones Comerciales</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarCondicionesComerciales" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersComercialCondition " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Modalidad:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="scroll">
+                                                    <label ng-repeat="modalidad in modalidadGroup" class="col-lg-12 BordeOne">
+                                                        <input style="margin-right: 15px" type="checkbox" ng-model="modalidad.active"> {{modalidad.reason}}
+                                                        <input type="number" ng-disabled="!modalidad.active" ng-model="modalidad.rate" class="input-modality" placeholder=" Tarifa UF">
+                                                    </label>
+                                                </div>       
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo de Plan:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <select name="planSelected" ng-model="dataModal.planType" class="form-control" required>
+                                                    <option ng-repeat="plan in modalidadPlan" value="{{plan.reason}}">{{plan.reason}}</option>
+                                                </select>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersComercialCondition.planSelected.$error.required">
+                                                        Debe ingresar el tipo de plan
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Plazo Contrato:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="Meses" name="contract" class="form-control" ng-model="dataModal.termContract" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersComercialCondition.contract.$error.required">
+                                                        Debe ingresar el plazo
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Venta:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="contractSale" class="form-control" ng-model="dataModal.saleRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Prepago:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="contractRate" class="form-control" ng-model="dataModal.prepaidRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Monitoreo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="rateMonitoring" class="form-control" ng-model="dataModal.searchingRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Arriendo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="rateRent" class="form-control" ng-model="dataModal.rentRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha de Contrato:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="date" name="contractDate" ng-model="dataModal.contractDateRaw" class="form-control" required/>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersComercialCondition.contractDate.$error.required">
+                                                        Debe ingresar la fecha de contrato
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cantidad Equipos Contratados:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="0" name="devicesCount" class="form-control" ng-model="dataModal.quantityKit" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersComercialCondition.devicesCount.$error.required">
+                                                        Debe ingresar la cantidad de equipos Contratados
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Equipos Instalados:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" placeholder="GV300" name="deviceInstalled" class="form-control" ng-model="dataModal.installedKit" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersComercialCondition.deviceInstalled.$error.required">
+                                                        Describa los tipos de dispositivos instalados
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Accesorios:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="deviceAccessory" class="form-control" ng-model="dataModal.accessory" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarPlataforma"><span class="glyphicon glyphicon-map-marker">
+                                </span>  Datos Administrador Plataforma</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarPlataforma" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersPlatform " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformAdmin" class="form-control" ng-model="dataModal.platformManagerUser" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersPlatform.platformAdmin.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformPrincipalPhone" class="form-control" ng-model="dataModal.platformManagerPhone" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersPlatform.platformPrincipalPhone.$error.required">
+                                                        Debe ingresar el telefono
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformSecondaryPhone" class="form-control" ng-model="dataModal.platformManagerSecondaryPhone" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformManagerJobTitle" class="form-control" ng-model="dataModal.platformManagerJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="platformEmail" ng-model="dataModal.platformManagerMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.platformEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="updateParametersPlatform.platformEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="updateParametersPlatform.platformEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordTwo" href="#actualizarObservaciones"><span class="glyphicon glyphicon-pencil">
+                                </span>  Observaciones</a>
+                        </h4>
+                    </div>
+                    <div id="actualizarObservaciones" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="updateParametersObservations" novalidate>
+                                <table class="table table-bordered">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <textarea class="form-control" placeholder="Ingrese la observacion" ng-model="dataModal.observation" rows="10" cols="50" name="comment"></textarea>
+                                    </div>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <!--<button type="button" class="btn btn-primary pull-right" ng-click="updateRowCompany()" ng-disabled="updateParameters.$invalid || updateParametersEjecutive.$invalid || updateParametersProveedor.$invalid || updateParametersClient.$invalid || updateParametersComercialCondition.$invalid || updateParametersPlatform.$invalid">-->
+                <button type="button" class="btn btn-primary pull-right" ng-click="updateRowCompany()" ng-disabled="updateParameters.$invalid || updateParametersPlatform.$invalid">
+                    <span>Actualizar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</modal>
+<!-- FIN actualizar informacion a un cliente -->
+
+<!-- INICIO adicionar un cliente -->
+<modal title="Adicionar Clientes" visible="showModalAddClient" style="width: 60%; margin-left: 20%; top: 5%; bottom: 5%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-3"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in aletErrorCompany" ng-show="showAletErrorCompany" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-group" id="accord">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#datosComerciales"><span class="glyphicon glyphicon-briefcase">
+                                </span>  Datos Comerciales <i>(Obligatorio)</i></a>
+                        </h4>
+                    </div>
+                    <div id="datosComerciales" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <form name="insertParameters" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyName" class="form-control" ng-model="dataModalInsert.customerName" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyName.$error.required">
+                                                        Debe ingresar nombre de la empresa
+                                                    </small>
+                                                </div>                                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Alias:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyAlias" class="form-control" ng-model="dataModalInsert.customerAlias" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyAlias.$error.required">
+                                                        Debe ingresar el alias de la empresa
+                                                    </small>
+                                                </div>                                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Rut:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyRut" class="form-control" ng-model="dataModalInsert.rut" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyRut.$error.required">
+                                                        Debe ingresar el RUT de la empresa
+                                                    </small>
+                                                </div>                                
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Razon Social:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyBusinessName" class="form-control" ng-model="dataModalInsert.businessName" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyBusinessName.$error.required">
+                                                        Debe ingresar la razon social
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>  
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Giro:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyGiro" class="form-control" ng-model="dataModalInsert.giro" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyGiro.$error.required">
+                                                        Debe ingresar el giro
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Segmento:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companySegment" class="form-control" ng-model="dataModalInsert.segment" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companySegment.$error.required">
+                                                        Debe ingresar el segmento
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Mercado:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyMercado" class="form-control" ng-model="dataModalInsert.market" size="20" required="">
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyMercado.$error.required">
+                                                        Debe ingresar el mercado
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Sitio Web:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyWeb" class="form-control" ng-model="dataModalInsert.webPage" size="20" required="">
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyWeb.$error.required">
+                                                        Debe ingresar el sitio web
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Direccion Comercial:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="companyAddress" class="form-control" ng-model="dataModalInsert.address" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyAddress.$error.required">
+                                                        Debe ingresar la direccion comercial
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Maximo de vehiculos:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="companyMaxVehicles" class="form-control" ng-model="dataModalInsert.maxVehicles" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyMaxVehicles.$error.required">
+                                                        Debe ingresar el maximo de vehiculos
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParameters.companyMaxVehicles.$error.min">
+                                                        El maximo de vehiculos debe ser mayor o igual a cero.
+                                                    </small>
+                                                </div>                         
+                                            </div>
+                                        </td>
+                                    </tr>   
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Maximo de usuarios por empresa:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="companyMaxUsers" class="form-control" ng-model="dataModalInsert.maxUsersPerCompany" min="0" max="400" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.companyMaxUsers.$error.required">
+                                                        Debe ingresar el maximo de usuarios por empresa
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParameters.companyMaxUsers.$error.min">
+                                                        El maximo de usuarios debe ser mayor o igual a cero.
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParameters.companyMaxUsers.$error.max">
+                                                        El maximo de usuarios no debe ser mayor a 400.
+                                                    </small>
+                                                </div>                        
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Generar Cartola Semanal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                                <input type="checkbox" ng-model="dataModalInsert.weeklyReport" ng-init="dataModalInsert.weeklyReport = true">
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Reseller:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                <input type="checkbox" ng-model="dataModalInsert.chek" ng-change="changeState()">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="ifReseller">
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Seleccionar Empresa:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <ui-select name="customer" allow-clear ng-model="dataModalInsert.companyResellerSelected" theme="bootstrap" ng-disabled="disabledCompany" required>
+                                                    <ui-select-match placeholder="Seleccione una empresa de la lista ...">{{$select.selected.name}}</ui-select-match>
+                                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerCert in customerGroupCert | filter: $select.search | limitTo: limitCustomerSearch">
+                                                        <div ng-bind-html="customerCert.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>  
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParameters.customer.$error.required">
+                                                        Debe seleccionar la empresa reseller
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#ejecutivo"><span class="glyphicon glyphicon-phone">
+                                </span>  Datos Ejecutivo Comercial</a>
+                        </h4>
+                    </div>
+                    <div id="ejecutivo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersEjecutive" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutiveName" class="form-control" ng-model="dataModalInsert.executive" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersEjecutive.ejecutiveName.$error.required">
+                                                        Debe ingresar nombre del ejecutivo
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutiveType" class="form-control" ng-model="dataModalInsert.executiveType" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="ejecutivePhone" class="form-control" ng-model="dataModalInsert.executivePhone" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Anexo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" name="ejecutiveAnex" class="form-control" ng-model="dataModalInsert.executiveAnnex" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="ejecutiveEmail" ng-model="dataModalInsert.executiveMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.ejecutiveEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div> 
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersEjecutive.ejecutiveEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParametersEjecutive.ejecutiveEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#pagos"><span class="glyphicon glyphicon-usd">
+                                </span>  Datos Pago Proveedores</a>
+                        </h4>
+                    </div>
+                    <div id="pagos" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersProveedor" novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre Contacto:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorName" class="form-control" ng-model="dataModalInsert.supplierName" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersProveedor.proveedorName.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorPrincipalPhone" class="form-control" ng-model="dataModalInsert.supplierPhone" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersProveedor.proveedorPrincipalPhone.$error.required">
+                                                        Debe ingresar el telefono
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorSecondaryPhone" class="form-control" ng-model="dataModalInsert.supplierPhoneTwo" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorjobTitle" class="form-control" ng-model="dataModalInsert.supplierJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="proveedorEmail" ng-model="dataModalInsert.supplierMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.proveedorEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersProveedor.proveedorEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParametersProveedor.proveedorEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Condicion Pago:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="Dias" name="proveedorCondition" class="form-control" ng-model="dataModalInsert.paymentCondition" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersProveedor.proveedorCondition.$error.required">
+                                                        Debe ingresar la condicion de pago
+                                                    </small>
+                                                </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Requiere OC:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                                <input type="checkbox" ng-model="dataModalInsert.oc" ng-init="dataModalInsert.oc = true">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Liberación de OC:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="proveedorOCLiberation" class="form-control" ng-model="dataModalInsert.supplierLiberationOC" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#cliente"><span class="glyphicon glyphicon-user">
+                                </span>  Datos Cliente</a>
+                        </h4>
+                    </div>
+                    <div id="cliente" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersClient " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientName" class="form-control" ng-model="dataModalInsert.tradeContactName" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersClient.clientName.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientPrincipalPhone" class="form-control" ng-model="dataModalInsert.tradeContactPhone" size="20" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersClient.clientPrincipalPhone.$error.required">
+                                                        Debe ingresar telefono de contacto
+                                                    </small>
+                                                </div>                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientSecondaryPhone" class="form-control" ng-model="dataModalInsert.tradeContactPhoneTwo" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="clientJobTitle" class="form-control" ng-model="dataModalInsert.tradeContactJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="companyEmail" ng-model="dataModalInsert.tradeContactMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModal.companyEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersClient.companyEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParametersClient.companyEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div>                        
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#condicionesComerciales"><span class="glyphicon glyphicon-thumbs-up">
+                                </span>  Condiciones Comerciales</a>
+                        </h4>
+                    </div>
+                    <div id="condicionesComerciales" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersComercialCondition " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Modalidad:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="scroll">
+                                                    <label ng-repeat="nuevaModalidad in newModalityGroup" class="col-lg-12 BordeOne">
+                                                        <input style="margin-right: 15px" type="checkbox" ng-model="nuevaModalidad.active"> {{nuevaModalidad.reason}}
+                                                        <input type="number" ng-disabled="!nuevaModalidad.active" ng-model="nuevaModalidad.rate" class="input-modality" placeholder=" Tarifa UF">
+                                                    </label>
+                                                </div>       
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo de Plan:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <select name="planSelected" ng-model="dataModalInsert.planType" class="form-control" required>
+                                                    <option ng-repeat="plan in modalidadPlan" value="{{plan.reason}}">{{plan.reason}}</option>
+                                                </select>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersComercialCondition.planSelected.$error.required">
+                                                        Debe ingresar el tipo de plan
+                                                    </small>
+                                                </div>                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Plazo Contrato:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="Meses" name="contract" class="form-control" ng-model="dataModalInsert.termContract" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersComercialCondition.contract.$error.required">
+                                                        Debe ingresar el plazo
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Venta:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="contractSale" class="form-control" ng-model="dataModalInsert.saleRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Prepago:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="contractRate" class="form-control" ng-model="dataModalInsert.prepaidRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Monitoreo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="rateMonitoring" class="form-control" ng-model="dataModalInsert.searchingRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tarifa Arriendo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="UF" name="rateRent" class="form-control" ng-model="dataModalInsert.rentRate" min="0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha de Contrato</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="date" name="contractDate" ng-model="dataModalInsert.contractDateRaw" class="form-control" required/>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersComercialCondition.contractDate.$error.required">
+                                                        Debe ingresar la fecha de contrato
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cantidad Equipos Contratados:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="number" placeholder="0" name="devicesCount" class="form-control" ng-model="dataModalInsert.quantityKit" min="0" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersComercialCondition.devicesCount.$error.required">
+                                                        Debe ingresar la cantidad de equipos Contratados
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Equipos Instalados:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" placeholder="GV300" name="deviceInstalled" class="form-control" ng-model="dataModalInsert.installedKit" required>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersComercialCondition.deviceInstalled.$error.required">
+                                                        Describa los tipos de dispositivos instalados
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Accesorios:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="deviceAccessory" class="form-control" ng-model="dataModalInsert.accessory" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#plataforma"><span class="glyphicon glyphicon-map-marker">
+                                </span>  Datos Administrador Plataforma <i>(Obligatorio)</i></a>
+                        </h4>
+                    </div>
+                    <div id="plataforma" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersPlatform " novalidate>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformAdmin" class="form-control" ng-model="dataModalInsert.platformManagerUser" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersPlatform.platformAdmin.$error.required">
+                                                        Debe ingresar el nombre
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Principal:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformPrincipalPhone" class="form-control" ng-model="dataModalInsert.platformManagerPhone" size="20" required>                            
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersPlatform.platformPrincipalPhone.$error.required">
+                                                        Debe ingresar el telefono
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Telefono Secundario:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformSecondaryPhone" class="form-control" ng-model="dataModalInsert.platformManagerSecondaryPhone" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Cargo:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="text" name="platformManagerJobTitle" class="form-control" ng-model="dataModalInsert.platformManagerJobTitle" size="20">                            
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>e-mail:</strong></td>
+                                        <td class="col-xs-10 col-sm-10 col-md-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="platformEmail" ng-model="dataModalInsert.platformManagerMail" placeholder="ejemplo@reddsystem.cl" required validator-mails="{{dataModalInsert.platformEmail}}">
+                                                    <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                                                </div>
+                                                <div class="error-container">
+                                                    <small class="text-muted" ng-show="insertParametersPlatform.platformEmail.$error.required">
+                                                        Debe ingresar al menos un correo electr&oacutenico
+                                                    </small>
+                                                    <small class="text-muted" ng-show="insertParametersPlatform.platformEmail.$error.validatorMails">
+                                                        El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+                                                    </small>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accord" href="#observaciones"><span class="glyphicon glyphicon-pencil">
+                                </span>  Observaciones</a>
+                        </h4>
+                    </div>
+                    <div id="observaciones" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form name="insertParametersObservations" novalidate>
+                                <table class="table table-bordered">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <textarea class="form-control" placeholder="Ingrese la observacion" ng-model="dataModalInsert.observation" rows="10" cols="50" name="comment"></textarea>
+                                    </div>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button type="button" class="btn btn-primary pull-right" 
+                        ng-click="insertRowCompany()" ng-disabled="insertParameters.$invalid || insertParametersPlatform.$invalid">
+                    <span>Insertar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</modal>
+<!-- FIN adicionar a un cliente -->    

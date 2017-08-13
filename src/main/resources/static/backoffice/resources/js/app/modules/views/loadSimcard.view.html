@@ -1,0 +1,63 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Carga masiva de sim cards</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorLoadFile" ng-show="showErrorLoadFile" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-7"></span>
+<div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="panel-heading header-info-unit">
+        <h3 class="panel-title textCenter">Archivo a cargar (.txt)</h3>
+    </div>
+    <form name="userBackofficeName" novalidate>
+        <table class="table table-bordered col-xs-12 col-sm-12 col-md12">
+            <tr>
+                <td align="center">
+                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                        <span class="btn btn-primary btn-file" ng-show="showLoadButton"><span>Seleccione Archivo&nbsp;&nbsp;</span><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span><input type="file" accept="text/plain" on-read-file="showContent($fileContent,$fileType)"/></span>
+                        <span class="fileinput-filename"></span><span class="fileinput-new">&nbsp;&nbsp;&nbsp;Ningun archivo seleccionado</span>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-click="processLoadFile()" type="button" class="btn btn-primary" ng-disabled="chargeDisabled" >Cargar&nbsp;
+                            <span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>
+                        </button>    
+                    </div>
+                </td>
+            </tr>                            
+        </table>
+    </form>
+</div>
+
+<div ng-if="content" class="col-sm-12 col-md-12 col-lg-12">
+    <div class="panel-heading header-info-unit">
+        <h3 class="panel-title textCenter">Contenido del archivo</h3>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="col-xs-6 col-sm-6 col-md-6 textRight">Número de Simcard</th>
+                <th class="col-xs-6 col-sm-6 col-md-6 textLeft">ICCID</th>
+            </tr>
+        </thead>
+        <tr>
+            <td colspan="2">
+                <pre class="ng-binding" style="height: 290px; text-align: center;">{{ content }}</pre>        
+            </td>
+        </tr>
+    </table>
+</div>
+

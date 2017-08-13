@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <button type="button" class="close close-sidebar" data-dismiss="modal" aria-hidden="true" ng-click="okey($event)">&times;</button>
+    <h3 class="modal-title">Backoffice</h3>
+</div>
+<div class="modal-body body-sidebar">
+    <ul class="sidebar-nav">
+        <li ng-class="{active: estaActivo(item.state)}" ng-repeat="item in menuSideBar" ng-click="cancelation($event)">
+            <a ui-sref="{{item.state}}">{{::item.title}}</a>
+        </li>
+    </ul>
+</div>
+<!--<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="okey($event)">OK</button>
+    <button class="btn btn-warning" ng-click="cancelation($event)">Cancel</button>
+</div>-->

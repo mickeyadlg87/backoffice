@@ -1,0 +1,288 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Administración de Unidades</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateWeek" ng-show="showAletErrorWeek" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDateMonth" ng-show="showAletErrorMonth" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDate" ng-show="showAlertErrorDateSelected" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-6"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Nombre</th>
+                                <th class="textLeft">Patente</th>
+                                <th class="textLeft">Imei</th>
+                                <th class="textLeft">Ultima Actividad</th>
+                                <th class="textLeft">SimCard</th>
+                                <th class="textCenter">Administrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="unit in unidades">
+                                <td align="left">
+                                    {{ unit.name || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.plateNumber || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit._m || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.dateUnit | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.simcard || "por definir"}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Editar" tooltip-placement="top" ng-click="editUnit(unit)">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </button> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informacion de la Unidad -->
+<modal title="Editar Unidad" visible="showModalUnit" style="width: 90%; margin-left: 5%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-17"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <form name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Nombre Unidad:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitName" class="form-control" ng-model="dataModalUnit.unitName" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitName.$error.required">
+                                        Debe ingresar el nombre de la unidad
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Patente:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitPlateNumber" class="form-control" ng-model="dataModalUnit.unitPlateNumber" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitPlateNumber.$error.required">
+                                        Debe ingresar la patente
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Imei:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitImei" class="form-control" ng-model="dataModalUnit.unitImei" size="20" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitImei.$error.required">
+                                        Debe ingresar el imei
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Vin:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitVin" class="form-control" ng-model="dataModalUnit.unitVin" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitVin.$error.required">
+                                        Debe ingresar el vin
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>SimCard:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitSimcard" class="form-control" ng-model="dataModalUnit.unitSimcard" size="20" disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitSimcard.$error.required">
+                                        Debe ingresar la simcard
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo Vehiculo:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitTypeName" class="form-control" ng-model="dataModalUnit.unitTypeName" size="20" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitTypeName.$error.required">
+                                        Debe ingresar el tipo de vehiculo
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Empresa:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <ui-select name="customerFact" allow-clear ng-model="dataModalUnit.unitCompanyId" theme="bootstrap" ng-disabled="disabledCompany" required>
+                                    <ui-select-match placeholder="Seleccione una empresa de la lista ...">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerFact.id as customerFact in customerGroupFact | filter: $select.search | limitTo: limitCustomerSearch">
+                                        <div ng-bind-html="customerFact.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>  
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="updateParameters.customerFact.$error.required">
+                                        Debe seleccionar la empresa
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Tipo de Venta:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <select name="unitTypeSale" ng-model="dataModalUnit.unitTypeSale" class="form-control" required 
+                                        ng-options="modalidad.id as modalidad.reason for modalidad in modalidadGroup">
+                                </select>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.unitTypeSale.$error.required">
+                                        Debe ingresar el tipo de venta
+                                    </small>
+                                </div>                              
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Empresa Facturar:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <ui-select name="customerFact" allow-clear ng-model="dataModalUnit.unitFacturationCustomerId" theme="bootstrap" ng-disabled="disabledCompany" required>
+                                    <ui-select-match placeholder="Seleccione una empresa de la lista ...">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customerFact.id as customerFact in customerGroupFact | filter: $select.search | limitTo: limitCustomerSearch">
+                                        <div ng-bind-html="customerFact.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>  
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="updateParameters.customerFact.$error.required">
+                                        Debe seleccionar la empresa a facturar
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Ultima Actividad:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitGeotext" class="form-control" ng-model="dataModalUnit.unitDate" size="20" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Ubicacion:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitGeotext" class="form-control" ng-model="dataModalUnit.unitGeotext" size="20" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Odometro:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitGeotext" class="form-control" ng-model="dataModalUnit.unitOdometer" size="20" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Horometro:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="unitGeotext" class="form-control" ng-model="dataModalUnit.uniHourmeter" size="20" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="updateUnitFunction()" ng-disabled="insertParameters.$invalid">
+                                    <span>Actualizar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>                        
+                </table>
+            </form>
+        </div>
+        <div ng-if="waitMap" class="col-sm-6 col-md-6 col-lg-6">
+            <table class="table table-bordered">
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter">Ultima Ubicación </h3>
+                </div>
+                <openlayers class="mapView" ol-center="center" class="map" id="map" ol-defaults="mapConfig" ol-markers="marker">
+                    <ol-layer ol-layer-properties="layer"></ol-layer>
+                    <ol-marker ol-marker-properties="marker" ></ol-marker>
+                </openlayers>
+            </table>
+        </div>
+    </div>
+</modal>
+<!-- FIN Unidad -->  

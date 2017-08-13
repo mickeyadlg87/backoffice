@@ -1,0 +1,239 @@
+<div class="row">
+	<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+	<uib-alert ng-repeat="alert in alertSaveCalenderized" ng-show="showAlertSaveCalenderizedError" type="{{alert.type}}" close="closeAlertSaveCalenderizedError($index)">{{alert.msg}}</uib-alert>
+	<uib-alert ng-repeat="alert in alertErrorSaveCalenderized" ng-show="showAlertErrorSaveCalenderizedError" type="{{alert.type}}" close="closeAlertSaveCalenderizedError($index)">{{alert.msg}}</uib-alert>
+		<form name="formReportCalenderized">
+			<table class="table table-bordered">
+				<tr ng-if="typeReport!='stateVehicle'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Grupo:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select name="dataGroup" ng-model="dataCalenderized.group" class="form-control" ng-disabled="disabledGroup"	ng-change="changeGroup(dataCalenderized.group)" required>
+								<option value="" selected="selected" disabled="disabled">--	Seleccione un Grupo --</option>
+								<option ng-repeat="option in groupsOption" value="{{option.idGroup}}">{{option.nameGroup}}</option>
+							</select>
+							<div class="error-container">
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataCalenderized.group.$error.required">
+			                    Seleccione un grupo
+			                  </small>
+			                </div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport!='stateVehicle'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>M&oacutevil:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select ng-model="dataCalenderized.vehicleSelected" class="form-control" ng-disabled="disableVehicles" data-ng-options="option as  option.nameVehicle for option in vehicle">
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='excessSpeed'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Velocidad M&aacutexima</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="number" name="dataSpeedMax" class="form-control" ng-model="dataCalenderized.parameters.speedMax" required min="5" max="300" ng-pattern="/^[0-9]{1,7}$/">
+							<div class="error-container">
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataSpeedMax.$error.pattern">
+			                  		 El velocidad debe ser un n&uacutemero entero
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataSpeedMax.$error.required">
+			                    Ingrese velocidad m&aacutexima
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataSpeedMax.$error.min || formReportCalenderized.dataSpeedMax.$error.max">
+			                    La velocidad debe estar en el rango de 5 a 300
+			                  </small>
+			                </div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='outsideHours'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Inicio Jornada Laboral</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select ng-model="dataCalenderized.parameters.initWorkday" class="form-control" data-ng-options="option as  option.name for option in hoursWorkday" required>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='outsideHours'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Termino Jornada Laboral</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select name="endWorkday" ng-model="dataCalenderized.parameters.endWorkday" class="form-control" data-ng-options="option as  option.name for option in hoursWorkday" required >
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='listEvent'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Eventos</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<input type="text" ng-model="dataCalenderized.parameters.arrayEvents" name="days" style="display:none" required />
+							<div isteven-multi-select
+							    input-model="dataCalenderized.parameters.arrayEvents"
+							    output-model=""
+							    button-label="name"
+							    item-label="name"
+							    tick-property="ticked"
+							    max-height="250px" 
+							    helper-elements="all reset filter"
+							    translation="localLang">
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='stateVehicle'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Horas de Inactividad</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="number" name="dataInactivity" class="form-control" ng-model="dataCalenderized.parameters.inactivity" min="1" required ng-pattern="/^[0-9]*$/">
+							<div class="error-container">
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataInactivity.$error.pattern">
+			                  		 Debe ingresar solo n&uacutemeros enteros.
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataInactivity.$error.required">
+		                    		Ingrese horas de inactividad.
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataInactivity.$error.min">
+			                    Las horas de inactividad debe ser mayor a cero.
+			                  </small>
+			                </div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='stateVehicle'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Horas de Inactividad en</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select ng-model="dataCalenderized.parameters.typeInactivity" class="form-control" data-ng-options="option as  option.nameType for option in typeInactivity">
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="typeReport=='latestEvents'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Cantidad de Posiciones</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="number" name="dataCountPosition" class="form-control" ng-model="dataCalenderized.parameters.countPosition" min="1" max="100" required ng-pattern="/^[0-9]*$/">
+							<div class="error-container">
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataCountPosition.$error.pattern">
+			                  		 Debe ingresar solo n&uacutemeros enteros.
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataCountPosition.$error.required">
+	                 						Ingrese cantidad de posiciones.
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataCountPosition.$error.min">
+		                    		Las horas de inactividad debe ser mayor a cero.
+			                  </small>
+			                  <small class="text-muted"
+			                         ng-show="formReportCalenderized.dataCountPosition.$error.max">
+		                    		Las horas de inactividad debe ser menor o igual a 100.
+			                  </small>
+			                </div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-show="typeReport!='stateVehicle' && typeReport!='latestEvents'">
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Per&iacuteodo Informe: </strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-bottom-8">
+							<select ng-model="dataCalenderized.rangeDate" class="form-control" ng-options="option.value as option.name for option in dates">
+							</select>
+						</div>
+						<div ng-if="rangeDate == 0">
+							<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 padding-bottom-8">
+								<div class="input-group">
+									<input id="inputFrom" name="inputFrom" type="datetime"
+										class="form-control input-sm" ng-model="dataCalenderized.parameters.datePickerFrom"
+										ng-required="true" ui-date="dateOptions"
+										placeholder="Dia/Mes/Año Hora:Minutos" required /> <span
+										class="input-group-btn">
+										<button type="button" class="btn btn-primary btn-sm" ng-click="open($event, 'inputFrom')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 padding-bottom-8">
+								<div class="input-group">
+									<input id="inputTo" name="inputTo" type="datetime" class="form-control input-sm" ng-model="dataCalenderized.parameters.datePickerTo" ng-required="true" ui-date="dateOptions"
+										placeholder="Dia/Mes/Año Hora:Minutos" required /> 
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-primary btn-sm"
+												ng-click="open($event, 'inputTo')">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Email:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="text" class="form-control" name="email" ng-model="dataCalenderized.emails" placeholder="ejemplo@gps.cl, ejemplo2@gps.cl" required validator-mails="{{emails}}">
+							<div class="error-container">
+				                  <small class="text-muted" ng-show="sendMail.email.$error.required">
+				                  		 Debe ingresar al menos un correo electr&oacutenico
+				                  </small>
+				                  <small class="text-muted" ng-show="sendMail.email.$error.validatorMails">
+				                  		 El o los mail(s) ingresado(s) no es(son) v&aacutelido(s)
+				                  </small>
+	                			</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>D&iacuteas de Env&iacuteo:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select ng-model="dataCalenderized.daysSend" class="form-control" data-ng-options="option.value as  option.name for option in daysSend">
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Horas de Env&iacuteo:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<select ng-model="dataCalenderized.hoursSend" class="form-control" data-ng-options="option.value as  option.name for option in hoursSend">
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="active col-xs-2 col-sm-2 col-md-2"><strong>Terminar el env&iacuteo el d&iacutea:</strong></td>
+					<td class="col-xs-10 col-sm-10 col-md-10">
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input id="inputToLimit" name="inputToLimit" type="datetime" class="form-control input-sm" ng-model="dataCalenderized.inputToLimit" ui-date="dateOptions"
+										placeholder="Dia/Mes/A&ntilde;o Hora:Minutos" /> 
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<button type="button" class="btn btn-primary pull-right" ng-click="createCalenderized(dataCalenderized)" ng-disabled="formReportCalenderized.$invalid || disableButtonSearch">
+								<span ng-if="realm!='entel'" class="glyphicon glyphicon-search" aria-hidden="true"></span> <span ng-if="realm=='entel'" class="entel-btn">[ </span> Consultar<span ng-if="realm=='entel'" class="entel-btn">_</span>
+							</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

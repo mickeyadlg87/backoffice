@@ -1,0 +1,147 @@
+<div class="col-md-12">
+    <div class="panel-group">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                <div class="panel-heading"><h4 class="panel-title font-entel"><span ng-if="realm == 'entel'" class="message-important">[ </span>Filtros</h4></div>
+            </a>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <form name="formReport">
+                    <table class="table table-bordered">
+                        <tr ng-if="typeReport !== 'tipodispositivo' && typeReport !== 'visualizadorEventos' && typeReport !== 'deviceCertifiedReport'">
+                            <td class="active col-xs-2 col-sm-2 col-md-2"><strong>Plataforma:</strong></td>
+                            <td class="col-xs-10 col-sm-10 col-md-10">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <select name="dataPlataform" ng-model="data.plataform" class="form-control" ng-disabled="disabledGroup" ng-change="changePlataform(data.plataform)" required>
+                                        <option ng-repeat="plataform in plataformGroup" value="{{plataform.alias}}">{{plataform.name}}</option>
+                                    </select>
+                                    <div class="error-container">
+                                        <small class="text-muted"
+                                               ng-show="formReport.dataPlataform.$error.required">
+                                            Seleccione una plataforma
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr ng-if="typeReport == 'busquedaimei' || typeReport == 'visualizadorEventos'">
+                            <td class="active col-xs-2 col-sm-2 col-md-2"><strong>Imei:</strong></td>
+                            <td class="col-xs-10 col-sm-10 col-md-10">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" name="imeiNumber" class="form-control" ng-model="data.imeiNumber" size="20" required>
+                                        <span class="input-group-btn">
+                                            <button type="button" ng-click="data.imeiNumber = undefined" class="btn btn-default btn-trash">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </span>
+                                    </div>                                    
+                                    <div class="error-container">
+                                        <small class="text-muted"
+                                               ng-show="formReport.imeiNumber.$error.required">
+                                            Ingrese un imei
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr ng-if="typeReport == 'unsubscribeReport' || typeReport == 'certifiedReport' || typeReport == 'visualizadorEventos' || typeReport == 'deviceCertifiedReport'">
+                            <td class="active col-xs-2 col-sm-2 col-md-2"><strong>Fecha desde: </br></br></br> Fecha Hasta:</strong></td>
+                            <td class="col-xs-10 col-sm-10 col-md-10">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <div class="input-group">
+<!--                                        <input type="date" name="dateFrom" class="form-control" ng-model="data.datefrom" required> -->
+                                        <input type="text" name="fechaDesde" class="form-control" datetime-picker="dd/MM/yyyy HH:mm" ng-model="dateFromPicker.date" 
+                                               is-open="dateFromPicker.open" datepicker-options="dateFromPicker.datepickerOptions" timepicker-options="dateFromPicker.timepickerOptions" required/>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default btn-trash" ng-click="openCalendar($event, 'dateFromPicker')">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="error-container">
+                                        <small class="text-muted"
+                                               ng-show="formReport.fechaDesde.$error.required">
+                                            Ingrese la fecha inicial
+                                        </small>
+                                    </div>
+                                    </br>
+                                    <div class="input-group">
+<!--                                        <input type="date" name="dateTo" class="form-control" ng-model="data.dateTo" required>-->
+                                        <input type="text" name="fechaHasta" class="form-control" datetime-picker="dd/MM/yyyy HH:mm" ng-model="dateToPicker.date" 
+                                               is-open="dateToPicker.open" datepicker-options="dateToPicker.datepickerOptions" timepicker-options="dateToPicker.timepickerOptions" required/>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default btn-trash" ng-click="openCalendar($event, 'dateToPicker')">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="error-container">
+                                        <small class="text-muted"
+                                               ng-show="formReport.fechaHasta.$error.required">
+                                            Ingrese la fecha final
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-if="typeReport == 'usuarios' || typeReport == 'unidades' || typeReport == 'darDeBaja'">
+                            <td class="active col-xs-2 col-sm-2 col-md-2"><strong>Empresa:</strong></td>
+                            <td class="col-xs-10 col-sm-10 col-md-10">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <ui-select allow-clear ng-model="data.companySelected" theme="bootstrap" ng-disabled="disabledCompany" ng-change="changeCompany(data.companySelected.id)" required>
+                                                <ui-select-match placeholder="Seleccione o busque un cliente en la lista ...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices refresh="checkCustomer($select.search)" refresh-delay="400" repeat="customer in customerGroup | filter: $select.search | limitTo: limitCustomerSearch">
+                                                    <div ng-bind-html="customer.name | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            <span class="input-group-btn">
+                                                <button type="button" ng-click="data.companySelected = undefined" class="btn btn-default btn-trash">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr ng-if="showRangeSelector == true">
+                            <td class="active col-xs-2 col-sm-2 col-md-2"><strong>Rango:</strong></td>
+                            <td class="col-xs-10 col-sm-10 col-md-10">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <select name="rangeSelection" ng-model="data.rangeSel" class="form-control" ng-disabled="disabledGroup" required>
+                                        <option ng-repeat="range in rangeList" value="{{range}}">{{range.name}}</option>
+                                    </select>
+                                    <div class="error-container">
+                                        <small class="text-muted"
+                                               ng-show="formReport.rangeSelection.$error.required">
+                                            Seleccione una cantidad de unidades
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <button type="button" class="btn btn-primary pull-right margin-left-10" ng-click="search(data, rangeDate)" ng-disabled="formReport.$invalid || disableButtonSearch">
+                                        <span ng-if="realm != 'entel'" class="glyphicon glyphicon-search" aria-hidden="true"></span> <span ng-if="realm == 'entel'" class="entel-btn">[ </span> Consultar<span ng-if="realm == 'entel'" class="entel-btn">_</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right" ng-click="createRedd(data)" ng-disabled="disableButtonCreate">
+                                        <span ng-if="realm != 'entel'" class="glyphicon glyphicon-plus" aria-hidden="true"></span> <span ng-if="realm == 'entel'" class="entel-btn">[ </span> Adicionar<span ng-if="realm == 'entel'" class="entel-btn">_</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

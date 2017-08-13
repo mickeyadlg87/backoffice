@@ -1,0 +1,230 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Visualizador de Eventos</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsMaxDaysSelected" ng-show="showAletMaxDaysSel" type="{{alert.type}}" close="closeAlertMaxDays($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-7"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div id="mapContainer" class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="panel-heading header-info-unit">
+                                        <h3 class="panel-title textCenter">Ubicación</h3>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <openlayers class="map mapViewSmall" ol-center="center" id="map" ol-defaults="mapConfig" ol-markers="marker">
+                                            <ol-layer ol-layer-properties="layer"></ol-layer>
+                                            <ol-marker ol-marker-properties="marker"></ol-marker>
+                                        </openlayers>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="panel-body overflow-y">
+                    <table id="eventTableMid" datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="textCenter" colspan="4"><b>BASE</b></th>
+                                <th class="textCenter" colspan="3"><b>FECHAS</b></th>
+                                <th class="textCenter" colspan="3"><b>STATUS</b></th>
+                                <th class="textCenter" colspan="12"><b>INFO EVENTO GPS</b></th>
+                                <th class="textCenter" colspan="7"><b>OTROS</b></th>
+                                <th class="textCenter" colspan="4"><b>EDL</b></th>
+                            </tr>
+                            <tr>
+                                <th class="textLeft">ID Evento</th>
+                                <th class="textLeft">Buff</th>
+                                <th class="textLeft">Trama Valida</th>                                
+                                <th class="textLeft">puerto</th>
+                                
+                                <th class="textLeft">Fecha_GPS</th>
+                                <th class="textLeft">Fecha Envio</th>
+                                <th class="textLeft">Fecha Recepción</th>
+                                
+                                <th class="textLeft">Pos.</th>
+                                <th class="textLeft">Sat.</th>
+                                <th class="textLeft">Signal</th>       
+                                
+                                <th class="textLeft">Vel.</th>
+                                <th class="textLeft">Azi.</th>
+                                <th class="textLeft">Alt.</th>   
+                                <th class="textLeft">Longitud</th>
+                                <th class="textLeft">Latitud</th>
+                                <th class="textLeft">Odometro</th>
+                                <th class="textLeft">Horometro</th>
+                                <th class="textLeft">Bat.</th>
+                                <th class="textLeft">Soft</th>
+                                <th class="textLeft">HW_ver</th>                                
+                                <th class="textLeft">Protocol</th>
+                                <th class="textLeft">Model</th>   
+                                
+                                <th class="textLeft">OriginalData</th>
+                                <th class="textLeft">OriginalData (Bynary)</th>
+                                <th class="textLeft">SourcePort</th>
+                                <th class="textLeft">SourceIp</th>
+                                <th class="textLeft">Driver Response</th>
+                                <th class="textLeft">Imei satelital</th>                                
+                                <th class="textLeft">Command Response</th>
+                                
+                                <th class="textLeft">vel</th>
+                                <th class="textLeft">rpm</th>                                
+                                <th class="textLeft">comb</th>
+                                <th class="textLeft">odo</th>  
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="clickableRow" ng-repeat="event in eventListPerMid" ng-click='clickRowEvent(event)'>
+                                <td align="left">
+                                    <small>({{event.eventId}}) {{event.callID}}</small>
+                                </td>
+                                <td align="left">
+                                    {{ event.buffer}}
+                                </td>
+                                <td align="left">
+                                    {{ event.tramaValida}}
+                                </td>
+                                <td align="left">
+                                    {{ event.reportingPort || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{(event.generationDate | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{(event.sendDate | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{(event.receptionDate | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>
+                                
+                                <td align="left">
+                                    {{ event.validPosition }}
+                                </td>
+                                <td align="left">
+                                    {{ event.satelites || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.signalQuality }}
+                                </td>
+                                <td align="left">
+                                    {{ event.speed }}
+                                </td>
+                                <td align="left">
+                                    {{ event.azimuth || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.altitude || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.longitude || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.latitude || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.odometer || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.hourmeter || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.battery || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.softwareVersion || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.hardwareVersion || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.version_Prototocolo || "S/I"}}
+                                </td>
+
+                                <td align="left">
+                                    {{ event.modelId || "S/I"}} {{event.deviceName}}
+                                </td>
+                                <td align="left">
+                                    {{ event.originalData || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.originalDataBynary || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.sourcePort || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.sourceIp || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.driverResponse || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.imeisatelital || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.commandResponse || "S/I"}}
+                                </td>
+                                
+                                <td align="left">
+                                    {{ event.obdprotocol2 ? event.obdprotocol2.vehicleSpeed : "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.obdprotocol2 ? event.obdprotocol2.rpm : "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.obdprotocol2 ? event.obdprotocol2.totalFuelUsed : "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.obdprotocol2 ? event.obdprotocol2.odometro : "S/I"}}
+                                </td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

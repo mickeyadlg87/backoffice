@@ -1,0 +1,222 @@
+{
+    "profiles": [
+        {
+            "description": "Barra superior Backoffice",
+            "index": 1,
+            "realm": "backoffice",
+            "state": "topbar",
+            "title": "topbar",
+            "device": "desktop",
+            "user": "aleal",
+            "childs": [
+                {
+                    "title": "topbar",
+                    "description": "Clientes",
+                    "state": "customer",
+                    "index": 1,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar",
+                    "description": "Usuarios",
+                    "state": "user",
+                    "index": 2,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.unit",
+                    "description": "Administracion",
+                    "state": "unidad",
+                    "index": 3,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.unit",
+                    "description": "Certificar",
+                    "state": "certDevice",
+                    "index": 4,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.unit",
+                    "description": "Dar de Baja",
+                    "state": "unsubscribe",
+                    "index": 5,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.unit",
+                    "description": "Reversar Baja",
+                    "state": "ratify",
+                    "index": 6,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.unit",
+                    "description": "Comandos Pota",
+                    "state": "potacommand",
+                    "index": 7,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.device",
+                    "description": "Administracion",
+                    "state": "dispositivo",
+                    "index": 8,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.device",
+                    "description": "Tipos",
+                    "state": "devicetype",
+                    "index": 9,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.report",
+                    "description": "Reporte de Facturacion",
+                    "state": "reportFacturation",
+                    "index": 10,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.report",
+                    "description": "Reporte Unidades Certificadas",
+                    "state": "reportCertified",
+                    "index": 11,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.report",
+                    "description": "Reporte Dispositivos Certificados",
+                    "state": "reportDeviceCertified",
+                    "index": 12,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.report",
+                    "description": "Reporte Dados de Baja",
+                    "state": "reportUnsubscribed",
+                    "index": 13,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "topbar.report",
+                    "description": "Reporte Keep Alive",
+                    "state": "reportKeepAlive",
+                    "index": 14,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                }
+
+            ],
+            "url": "/topnavbar",
+            "content": {}
+        },
+        {
+            "description": "Barra lateral Backoffice",
+            "index": 2,
+            "realm": "backoffice",
+            "state": "leftbar",
+            "title": "leftbar",
+            "device": "desktop",
+            "user": "aleal",
+            "childs": [
+                {
+                    "title": "leftbar",
+                    "description": "Buscar por IMEI",
+                    "state": "midsearch",
+                    "index": 1,
+                    "url": "",
+                    "active": true,
+                    "childs": [],
+                    "content": {}
+                },
+                {
+                    "title": "leftbar",
+                    "description": "Visualizador de Eventos",
+                    "state": "eventviewer",
+                    "index": 2,
+                    "url": "",
+                    "active": true,
+                    "child": [],
+                    "content": {}
+                },
+                {
+                    "title": "leftbar",
+                    "description": "Carga Masiva Simcard",
+                    "state": "loadsimcard",
+                    "index": 3,
+                    "url": "",
+                    "active": true,
+                    "child": [],
+                    "content": {}
+                },
+                {
+                    "title": "leftbar",
+                    "description": "Events",
+                    "state": "events",
+                    "index": 4,
+                    "url": "",
+                    "active": true,
+                    "child": [],
+                    "content": {}
+                },
+                {
+                    "title": "leftbar",
+                    "description": "Asignar Perfil Backoffice",
+                    "state": "addProfile",
+                    "index": 5,
+                    "url": "",
+                    "active": true,
+                    "child": [],
+                    "content": {}
+                }
+            ],
+            "url": "/leftnavbar",
+            "content": {}
+        }
+    ],
+    "status": "ok"
+}

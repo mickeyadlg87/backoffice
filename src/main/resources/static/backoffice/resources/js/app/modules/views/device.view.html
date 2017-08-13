@@ -1,0 +1,451 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Administración de Dispositivos</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>  
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorEditSimCard" ng-show="showErrorSimCard" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-5"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm === 'entel'" class="message-important">[ </span>Dispositivos</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Imei</th>
+                                <th class="textLeft">Fecha Validacion</th>
+                                <th class="textLeft">Fecha Instalacion</th>
+                                <th class="textLeft">Ultima IP</th>
+                                <th class="textLeft">Ultimo Puerto</th>
+                                <th class="textLeft">Tipo Dispositivo</th>
+                                <th class="textCenter">Administrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dispositivo in devices">
+                                <td align="left">
+                                    {{ dispositivo.mid || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ dispositivo.fechaValidacion | date: 'yyyy-MM-dd'}}
+                                </td>
+                                <td align="left">
+                                    {{ dispositivo.fechaInstalacion | date: 'yyyy-MM-dd'}}
+                                </td>
+                                <td align="left">
+                                    {{ dispositivo.lastIp || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ dispositivo.lastPort || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ dispositivo.nameDeviceType || "por definir"}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center margin-left-10" data-toggle="tooltip" uib-tooltip="SimCard" tooltip-placement="top" ng-click="editSimcard(dispositivo)">
+                                            <span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span>
+                                        </button> 
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Editar" tooltip-placement="top" ng-click="editDevice(dispositivo)">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Certificar" tooltip-placement="top" ng-disabled="{{dispositivo.disabledCert}}" ng-click="certDevice(dispositivo)">
+                                            <span class="glyphicon glyphicon-signal" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informacion de la SimCard -->
+<modal title="Editar SimCard" visible="showModalSimCard" style="width: 50%; margin-left: 25%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-3"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsIccidNotExist" ng-show="showAlertIccidNotFound" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsIccidOk" ng-show="showAlertIccidOk" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}<strong>{{iccidFound}}</strong></uib-alert>    
+    <div class="row">
+        <div class="col-md-12">
+            <form name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Numero de Telefono:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="phoneNumber" class="form-control" ng-model="dataModalSimcard.simcardPhoneNumber" ng-blur="checkSimcardEditNumber(dataModalSimcard.simcardPhoneNumber)" maxlength="12" pattern=".{8,12}" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.phoneNumber.$error.required">
+                                        Debe ingresar el numero de telefono (8 a 12 caracteres)
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha de Instalacion:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="DateInstalation" class="form-control" ng-model="dataModalSimcard.simcardDateInstalation" size="20" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.DateInstalation.$error.required">
+                                        Debe ingresar la fecha de instalacion
+                                    </small>
+                                </div>                                
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Proveedor:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <!-- <input type="text" name="provider" class="form-control" ng-model="dataModalSimcard.simcardProrvider" size="20" required> -->
+                                <select name="providerSelected" ng-model="dataModalSimcard.simcardProrvider" class="form-control" required>
+                                    <option ng-repeat="provider in providerGroup" value="{{provider.alias}}">{{provider.name}}</option>
+                                </select>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.provider.$error.required">
+                                        Debe ingresar el proveedor
+                                    </small>
+                                </div>                              
+                            </div>
+                        </td>
+                    </tr>   
+                    <tr>
+                        <td class="active col-xs-3 col-sm-4 col-md-3" style="text-align: right;"><strong>Modem Id:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="mid" class="form-control" ng-model="dataModalSimcard.simcardMID" size="20" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.mid.$error.required">
+                                        Debe ingresar el modem Id
+                                    </small>
+                                </div>                              
+                            </div>
+                        </td>
+                    </tr>  
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha Creacion:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="creationDate" class="form-control" ng-model="dataModalSimcard.simcardDateCreation" size="20" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.creationDate.$error.required">
+                                        Debe ingresar la fecha de creacion
+                                    </small>
+                                </div>                          
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>SimCard de Baja:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <input type="checkbox" ng-model="dataModalSimcard.chek" ng-change="changeState()">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="downDateTrue">
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha de Baja:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="date" name="dateSimCardDown" ng-model="dataModalSimcard.simcardDatedown" class="form-control"/>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.dateSimCardDown.$error.required">
+                                        Debe ingresar la fecha de baja
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="updateSimCardFunction()" ng-disabled="insertParameters.$invalid">
+                                    <span>Actualizar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>                        
+                </table>
+            </form>
+        </div>
+    </div>
+</modal>
+<!-- FIN SimCard -->  
+
+
+<!-- Adicionar SimCard -->
+<modal title="Adicionar SimCard" visible="showModalSimCardAdd" style="width: 50%; margin-left: 25%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-3"></span>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <form name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Modem Id:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="mid" class="form-control" ng-model="dataModalSimcardAdd.simcardMidAdd" size="20" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.mid.$error.required">
+                                        Debe ingresar el modem Id
+                                    </small>
+                                </div>                              
+                            </div>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>ICCID:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="iccid" class="form-control" ng-model="dataModalSimcardAdd.simcardIccid" ng-blur="checkIccid(dataModalSimcardAdd.simcardIccid)" maxlength="25" required>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.iccid.$error.required">
+                                        Debe ingresar el ICCID, se autocompleta el número de telefono
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Numero de Telefono:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="text" name="phoneNumber" class="form-control" ng-model="dataModalSimcardAdd.simcardPhoneNumberAdd" maxlength="12" pattern=".{8,12}" required disabled>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.phoneNumber.$error.required">
+                                        Número de telefono (8 a 12 caracteres)
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Fecha de Instalacion:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="date" name="DateInstalation" ng-model="dataModalSimcardAdd.simcardDateInstalationAdd" class="form-control" required/>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.DateInstalation.$error.required">
+                                        Debe ingresar la fecha de instalacion
+                                    </small>
+                                </div>                                
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="active col-xs-3 col-sm-3 col-md-3" style="text-align: right;"><strong>Proveedor:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <select name="providerSelected" ng-model="dataModalSimcardAdd.simcardProrviderAdd" class="form-control" required>
+                                    <option ng-repeat="provider in providerGroup" value="{{provider.alias}}">{{provider.name}}</option>
+                                </select>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.providerSelected.$error.required">
+                                        Debe ingresar el proveedor
+                                    </small>
+                                </div>                              
+                            </div>
+                        </td>
+                    </tr>   
+                    <tr>
+                        <td colspan="2">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary pull-right" ng-click="addSimCardFunction()" ng-disabled="insertParameters.$invalid">
+                                    <span>Agregar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>                        
+                </table>
+            </form>
+        </div>
+    </div>
+</modal>
+<!-- FIN SimCard --> 
+
+
+<!-- Editar dispositivo-->
+<modal title="Editar Dispositivo" visible="showModalEditDevice" style="width: 50%; margin-left: 25%;">
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="col-md-12">
+            <form name="updateDevice" novalidate>
+                <div class="form-group">
+                    <label>Imei</label>
+                    <input type="text" name="deviceImeiSelected" class="form-control" ng-model="dataModal.deviceImei" size="20" required disabled>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateDevice.deviceImeiSelected.$error.required">
+                            Debe ingresar el imei
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Estado Certificacion</label>
+                    <input type="text" name="deviceValidationDate" ng-model="dataModal.certifite" class="form-control" disabled required/>
+                </div>
+                <div class="form-group">
+                    <label>Tipo Dispositivo</label>
+                    <input type="text" name="deviceType" class="form-control" ng-model="dataModal.deviceName" size="20" required disabled>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateDevice.deviceType.$error.required">
+                            Debe ingresar el tipo de dispositivo
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ultima IP</label>
+                    <input type="text" name="deviceLastIp" class="form-control" ng-model="dataModal.deviceLastIp" size="20" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateDevice.deviceLastIp.$error.required">
+                            Debe ingresar la ultima Ip
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ultimo Puerto</label>
+                    <input type="text" name="deviceLastPort" class="form-control" ng-model="dataModal.deviceLastPort" required>
+                    <div class="error-container">
+                        <small class="text-muted" ng-show="updateDevice.deviceLastPort.$error.required">
+                            Debe ingresar el ultimo puerto
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Baja</label>
+                    <input type="date" name="downDate" ng-model="dataModal.deviceDownDate" class="form-control" required/>
+                </div>
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter">Accesorios Instalados</h3>
+                </div>
+                <form>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="textCenter">Usuario Certificador</th>
+                                <th class="textCenter">Fecha Validacion</th>
+                                <th class="textCenter">Accesorios Certificados</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td class="col-xs-4 col-sm-4 col-md-4 active" align="center">{{accessoriesDataUsername || "S/I"}}</td>
+                            <td class="col-xs-4 col-sm-4 col-md-4 active" align="center">{{accessoriesDataValidationDate}}</td>
+                            <td class="col-xs-4 col-sm-4 col-md-4 active" align="center">{{stringData  || "S/I"}}</td>
+                        </tr>
+                    </table>
+                </form>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="updateDeviceFunction()">
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<!-- Certificar dispositivo-->
+<modal title="Certificar Dispositivo" visible="showModalCertDevice" style="width: 50%; margin-left: 25%;">
+    <uib-alert ng-repeat="alert in alertsCertificateDeviceS" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsCertificateDeviceF" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataEvents" ng-show="showAletErrorEvents" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataAccesories" ng-show="showAletErrorAccessories" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="form-group" align="center">
+            <label><h4>Dispositivo: <strong>{{dataModalCert.deviceName}}</strong> | Imei: <strong>{{dataModalCert.deviceImei}}</strong></h4></label>
+        </div>
+
+        <div id="evCerticated" class="col-md-12">
+            <form ng-if="hasCertificateEvents" name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="header-info-unit textCenter">Evento a Validar</th>
+                            <th class="header-info-unit textCenter">Certificado</th>
+                            <th class="header-info-unit textCenter">Estado Validacion</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="eventNameCert in eventCert">
+                        <td class="col-xs-4 col-sm-4 col-md-4" align="right">{{eventNameCert.eventName}}</td>
+                        <td class="col-xs-4 col-sm-4 col-md-4" align="left">
+                            <switch id="certEventsId" name="certEvents" ng-model="eventNameCert.enabled" disabled="true" class="green"></switch>
+                        </td>
+                        <td class="col-xs-4 col-sm-4 col-md-4 textCenter" align="left">{{eventNameCert.validation}}</td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <form novalidate>
+                <table class="table table-bordered">
+                    <div class="panel-heading header-info-unit">
+                        <h2 class="panel-title textCenter" style="font-size: 13px;">Accesorios por Dipositivo</h2>
+                    </div>
+                    <tr ng-repeat="accessories in accessoriesCert">
+                        <td class="col-xs-8 col-sm-8 col-md-8 text-right">{{accessories.accesoryName}}</td>
+                        <td class="col-xs-4 col-sm-4 col-md-4" align="center">
+                            <label class="switchLabel">
+                                <input type="checkbox" ng-model="accessories.accesorySelected">
+                                <div class="sliderLabel"></div>
+                            </label>
+
+                            <!--<switch id="enabled" name="enabled" ng-model="enabled" class="green"></switch>-->
+                        </td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right margin-left-10" ng-disabled="eventCertTrue" ng-click="insertValidationDateForCertificate()" disabled>
+                        <span>Certificar Dispositivo</span>
+                    </button>
+                    <button type="button" class="btn btn-primary pull-right" ng-click="validateEvent()">
+                        <span>Validar Eventos</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>    
+</modal>

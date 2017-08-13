@@ -1,0 +1,222 @@
+## YAML Template.
+spring:
+  profiles:
+      active: ${TSENV}
+      
+  thymeleaf:
+      mode: LEGACYHTML5      
+    
+server:
+    port: 9001  
+    contextPath: /
+    session: 
+        # session timeout (secs)
+        timeout: 1800
+---
+#FOR LOCAL
+
+spring:
+    profiles: LOCAL
+    
+url:
+    service:
+        history: http://10.11.121.12:41900
+        companyService: http://definite-boats.maas.reddsystem.com:8500/metadata/company/
+        userService : http://definite-boats.maas.reddsystem.com:8500/metadata/user/
+        authService : http://definite-boats.maas.reddsystem.com:8500/auth/
+        vehicleService : http://definite-boats.maas.reddsystem.com:8500/metadata/vehicle/
+    backoffice: 
+        eventService: http://definite-boats.maas.reddsystem.com:8500/backoffice/event/
+        deviceService: http://definite-boats.maas.reddsystem.com:8500/backoffice/device/  
+        accesssoryService: http://definite-boats.maas.reddsystem.com:8500/backoffice/accesory/
+        reportService: http://definite-boats.maas.reddsystem.com:8500/backoffice/report/
+        potaService: http://definite-boats.maas.reddsystem.com:8500/backoffice/pota/
+        customerService : http://definite-boats.maas.reddsystem.com:8500/backoffice/customer/
+        userService : http://definite-boats.maas.reddsystem.com:8500/backoffice/user/
+        parameterService : http://definite-boats.maas.reddsystem.com:8500/backoffice/
+        
+clientview:
+    limit: 3000
+    offset: 0
+    
+deviceview:
+    limit : 1000
+    offset: 0
+    
+unitview:
+    limit : 1000
+    offset: 0
+    
+reportview:
+    limit: 100
+    offset: 0
+    
+quantityForCompany:
+    limit: 10
+    offset: 0
+    
+reports:
+    path: C:\\Proyectos\\rastreosatLite-V2\\reportesTemplates
+    
+aws:
+    user: AKIAI4SSEVBOO6PBZXIA
+    pass: YrAqh+mg7/DXQi1uW7OW3PL5XJ/XP+QTfYdtMjCu
+    bucket: reportesprueba
+    timeoutlink: 30  
+
+---
+#FOR DEVELOPMENT
+
+spring:
+    profiles: DESA
+    
+url:
+    service:
+        history: http://definite-boats.maas.reddsystem.com:8500
+        companyService: http://definite-boats.maas.reddsystem.com:8500/metadata/company/
+        userService : http://definite-boats.maas.reddsystem.com:8500/metadata/user/
+        authService : http://definite-boats.maas.reddsystem.com:8500/auth/
+        vehicleService : http://definite-boats.maas.reddsystem.com:8500/metadata/vehicle/
+    backoffice: 
+        eventService: http://definite-boats.maas.reddsystem.com:8500/backoffice/event/
+        deviceService: http://definite-boats.maas.reddsystem.com:8500/backoffice/device/  
+        accesssoryService: http://definite-boats.maas.reddsystem.com:8500/backoffice/accesory/
+        reportService: http://definite-boats.maas.reddsystem.com:8500/backoffice/report/
+        potaService: http://definite-boats.maas.reddsystem.com:8500/backoffice/pota/
+        customerService : http://definite-boats.maas.reddsystem.com:8500/backoffice/customer/
+        userService : http://definite-boats.maas.reddsystem.com:8500/backoffice/user/
+        parameterService : http://definite-boats.maas.reddsystem.com:8500/backoffice/
+        
+clientview:
+    limit: 3000
+    offset: 0
+    
+deviceview:
+    limit : 1000
+    offset: 0
+    
+unitview:
+    limit : 1000
+    offset: 0
+    
+reportview:
+    limit: 100
+    offset: 0
+    
+quantityForCompany:
+    limit: 10
+    offset: 0
+    
+reports:
+    path: /opt/reporteTemplates
+    
+aws:
+    user: AKIAI4SSEVBOO6PBZXIA
+    pass: YrAqh+mg7/DXQi1uW7OW3PL5XJ/XP+QTfYdtMjCu
+    bucket: reportesprueba
+    timeoutlink: 30    
+            
+---
+#FOR QA        
+
+spring:
+    profiles: AWS-QA
+    
+url:
+    service:
+        history: http://servicios.qa.reddsystem.com
+        companyService: http://servicios.qa.reddsystem.com/metadata/company/
+        userService: http://servicios.qa.reddsystem.com/metadata/user/
+        authService: http://servicios.qa.reddsystem.com/auth/
+        vehicleService : http://servicios.qa.reddsystem.com/metadata/vehicle/
+    backoffice:
+        eventService: http://servicios.qa.reddsystem.com/backoffice/event/
+        deviceService: http://servicios.qa.reddsystem.com/backoffice/device/        
+        accesssoryService: http://servicios.qa.reddsystem.com/backoffice/accesory/
+        reportService: http://servicios.qa.reddsystem.com/backoffice/report/
+        potaService: http://servicios.qa.reddsystem.com/backoffice/pota/
+        customerService : http://servicios.qa.reddsystem.com/backoffice/customer/
+        userService : http://servicios.qa.reddsystem.com/backoffice/user/
+        parameterService : http://servicios.qa.reddsystem.com/backoffice/
+        
+clientview:
+    limit: 3000
+    offset: 0        
+
+deviceview:
+    limit : 1000
+    offset: 0
+    
+unitview:
+    limit : 1000
+    offset: 0
+    
+reportview:
+    limit: 100
+    offset: 0
+    
+quantityForCompany:
+    limit: 10
+    offset: 0
+    
+reports:
+    path: /usr/local/reporteTemplates    
+
+aws:
+    user: AKIAI4SSEVBOO6PBZXIA
+    pass: YrAqh+mg7/DXQi1uW7OW3PL5XJ/XP+QTfYdtMjCu
+    bucket: reportesprueba
+    timeoutlink: 30    
+    
+---
+#FOR PROD        
+
+spring:
+    profiles: AWS-PROD
+    
+url:
+    service:
+        history: http://servicios.prod.reddsystem.com
+        companyService: http://servicios.prod.reddsystem.com/metadata/company/
+        userService: http://servicios.prod.reddsystem.com/metadata/user/
+        authService: http://servicios.prod.reddsystem.com/auth/
+        vehicleService : http://servicios.prod.reddsystem.com/metadata/vehicle/
+    backoffice:
+        eventService: http://servicios.prod.reddsystem.com/backoffice/event/
+        deviceService: http://servicios.prod.reddsystem.com/backoffice/device/        
+        accesssoryService: http://servicios.prod.reddsystem.com/backoffice/accesory/
+        reportService: http://servicios.prod.reddsystem.com/backoffice/report/
+        potaService: http://servicios.prod.reddsystem.com/backoffice/pota/
+        customerService : http://servicios.prod.reddsystem.com/backoffice/customer/
+        userService : http://servicios.prod.reddsystem.com/backoffice/user/
+        parameterService : http://servicios.prod.reddsystem.com/backoffice/
+        
+clientview:
+    limit: 3000
+    offset: 0    
+    
+deviceview:
+    limit : 1000
+    offset: 0
+    
+unitview:
+    limit : 10000
+    offset: 0 
+    
+reportview:
+    limit: 100
+    offset: 0
+    
+quantityForCompany:
+    limit: 10
+    offset: 0
+    
+reports:
+    path: /usr/local/reporteTemplates
+    
+aws:
+    user: AKIAI4SSEVBOO6PBZXIA
+    pass: YrAqh+mg7/DXQi1uW7OW3PL5XJ/XP+QTfYdtMjCu
+    bucket: reportes_rslite
+    timeoutlink: 30    
+    

@@ -1,0 +1,175 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Tipos de Dispositivos</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  >
+
+                    <li class="dropdown" ng-show="reportShow">
+                        <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-download" arial-hidden="true"></span>
+                            Expotar <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="text-white" ng-click="generateReport('xls')">Exportar a Excel</a></li>
+                            <li><a href="#" class="text-white" ng-click="generateReport('pdf')">Exportar a PDF</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsExport" ng-show="showAletErrorExport" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>  
+    <uib-alert ng-repeat="alert in alertsExportOk" ng-show="showAlertExportOk" type="{{alert.type}}" close="closeAlertSendEmail($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-4"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Nombre</th>
+                                <th class="textLeft">Fabricante</th>
+                                <th class="textLeft">Fecha de creación</th>
+                                <th class="textCenter">Administrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="devType in deviceTypeList">
+                                <td align="left">
+                                    {{ devType.name || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ devType.producer || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ devType.creationDate | date: 'yyyy-MM-dd'}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center margin-left-10" ng-click="editDeviceType(devType)">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Eventos
+                                        </button> 
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" ng-click="editAccesory(devType)">
+                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Accesorios
+                                        </button> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modificacion eventos por tipo de dispositivo-->
+<modal title="" visible="showModalEventByDevice" style="width: 60%; margin-left: 20%; top: 5%; bottom: 5%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-5"></span>
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="panel-body overflow-y" ng-show="reportEventsShow">
+            <form name="updateEventByDevice">
+                <div class="form-group">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefsForEvent" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Evento</th>
+                                <th class="textLeft">Fecha de aprobacion</th>
+                                <th class="textLeft">Habilitado en plataforma</th>
+                                <th class="textLeft">Certificacion dispositivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="event in eventEnableDevTpList">
+                                <td align="left">
+                                    {{ event.eventName || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ event.approvalDate | date: 'yyyy-MM-dd'}}
+                                </td>
+                                <td align="left">
+                                    <input type="checkbox" ng-model="event.enablePlataform">
+                                </td>
+                                <td align="left">
+                                    <input type="checkbox" ng-model="event.enableCertificate">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="updateEventsForDevice()" ng-disabled="false" style="margin-bottom: -2%;">
+                        <span>Actualizar</span>
+                    </button>
+                </div>   
+            </form>
+        </div>
+    </div>    
+</modal>
+<!-- Modificacion eventos por tipo de dispositivo-->
+<modal title="Accesorios dispositivo" visible="showModalAccesoryByDevice" style="width: 50%; margin-left: 25%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-6"></span>
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertSaveParameters" ng-show="showSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertErrorSaveParameters" ng-show="showErrorSaveParameters" type="{{alert.type}}" close="closeAlertParameters($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="panel-body overflow-y" ng-show="reportAccesoryShow">
+            <form name="updateAccesoryByDevice">
+                <div class="form-group">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefsForAccesories" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Accesorio</th>
+                                <th class="textLeft">Fabricante</th>
+                                <th class="textLeft">Variable</th>
+                                <th class="textLeft">Habilitado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="accesory in accesoryDevTypeList">
+                                <td align="left">
+                                    {{ accesory.accesoryName || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ accesory.accesoryProducer || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ accesory.variable || "por definir"}}
+                                </td>                                
+                                <td align="left">
+                                    <input type="checkbox" ng-model="accesory.enable">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="updateAccesoriesForDevice()" ng-disabled="false">
+                        <span>Actualizar</span>
+                    </button>
+                </div>   
+            </form>
+        </div>
+    </div>    
+</modal>

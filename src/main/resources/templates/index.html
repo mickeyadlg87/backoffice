@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Backoffice Redd System</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="backoffice/resources/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/jasny-bootstrap.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/bootstrap-theme.min.css" /> 
+        <link rel="stylesheet" href="backoffice/resources/css/angular-aside.min.css"/>
+        <!-- endbuild -->
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="backoffice/resources/lib/angular/ng-table.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/jquery-ui.css" media="screen">
+        <link rel="stylesheet" href="backoffice/resources/css/jquery-ui.structure.css" media="screen">
+        <link rel="stylesheet" href="backoffice/resources/css/jquery-ui.theme.css" media="screen">        
+        <link rel="icon" type="image/x-icon" href="backoffice/resources/images/newlogo.png">
+        <link rel="stylesheet" href="backoffice/resources/css/app.css" />
+        <link rel="stylesheet" href="backoffice/resources/lib/angular/select.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/angular-ui-switch.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/ol.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/sweet-alert.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/nv.d3.min.css" />
+        <link rel="stylesheet" href="backoffice/resources/css/ngProgress.css" />
+    </head>
+    <body ng-cloak class="rslite" ng-app="backOfficeNewapp">
+
+        <!--[if lte IE 8]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <nav role="navigation" data-ng-include="'backoffice/resources/js/app/modules/views/navbar.general.view.html'"></nav>
+        <div data-ui-view></div>
+
+        <script src="backoffice/resources/lib/jquery.min.js"></script>
+        <script src="backoffice/resources/lib/angular/jquery-ui.js"></script>
+        <script src="backoffice/resources/lib/angular/jquery.dataTables.js"></script>
+
+        <script src="backoffice/resources/lib/bootstrap.min.js"></script>
+        <script src="backoffice/resources/lib/angular/angular.min.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-route.min.js"></script>
+        <script type="text/javascript" src="backoffice/resources/lib/angular/angular-datatables.min.js"></script>
+        <script src="backoffice/resources/lib/angular/ui-bootstrap-0.13.2.min.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-animate.min.js"></script>
+        <script src="backoffice/resources/lib/angular/ui-bootstrap-tpls-0.14.3.js"></script> 
+        <script src="backoffice/resources/lib/angular/angular-sanitize.min.js"></script> 
+        <script src="backoffice/resources/lib/angular/angular-ui-router.min.js"></script>
+        <script src="backoffice/resources/lib/ui-bootstrap-tpls.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-aside.min.js"></script>
+        <!-- <script src="../reports/resources/lib/angular/ui-grid.min.js"></script> -->
+        <script src="backoffice/resources/lib/angular/d3.js"></script>
+        <script src="backoffice/resources/lib/angular/nv.d3.min.js"></script>  
+        <script src="backoffice/resources/lib/angular/angular-nvd3.js"></script>
+        <script src="backoffice/resources/lib/angular/ngprogress.js"></script>
+
+        <script src="backoffice/resources/lib/angular/sweetalert.min.js"></script>
+        <script src="backoffice/resources/lib/angular/SweetAlert.js"></script>
+
+        <script src="backoffice/resources/lib/angular/date.js"></script>
+        <script src="backoffice/resources/lib/jasny-bootstrap.js"></script>
+        <script src="backoffice/resources/lib/jquery-ui-timepicker-addon.js"></script>
+        <script src="backoffice/resources/lib/angular/ng-table.min.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-locale_es-cl.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-resource.min.js"></script>
+        <script src="backoffice/resources/lib/angular/helpers.js"></script>
+        <script src="backoffice/resources/lib/angular/multi-select.js"></script> 
+        <script src="backoffice/resources/lib/angular/angular-ui-switch.min.js"></script>
+        <script src="backoffice/resources/lib/angular/spin.min.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-spinner.js"></script>
+        <script src="backoffice/resources/lib/angular/highcharts-ng.js"></script>
+        <script src="backoffice/resources/lib/angular/select.min.js"></script>
+        <script src="backoffice/resources/lib/angular/ol.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-openlayers-directive.min.js"></script>
+        <script src="backoffice/resources/lib/angular/ngStorage.min.js"></script>
+        <script src="backoffice/resources/lib/angular/moment.js"></script>
+        <script src="backoffice/resources/lib/angular/angular-moment.js"></script>
+        <script src="backoffice/resources/lib/angular/datetime-picker.min.js"></script>
+
+        <script src="backoffice/resources/js/app/app.js"></script>  
+
+        <!-- States -->
+        <script src="backoffice/resources/js/app/modules/customer.js"></script>
+        <script src="backoffice/resources/js/app/modules/user.js"></script>
+        <script src="backoffice/resources/js/app/modules/logout.js"></script>
+        <script src="backoffice/resources/js/app/modules/devicetype.js"></script>
+        <script src="backoffice/resources/js/app/modules/device.js"></script>
+        <script src="backoffice/resources/js/app/modules/login.js"></script>
+        <script src="backoffice/resources/js/app/modules/midsearch.js"></script>
+        <script src="backoffice/resources/js/app/modules/units.js"></script>
+        <script src="backoffice/resources/js/app/modules/facturationreport.js"></script>
+        <script src="backoffice/resources/js/app/modules/unsubscribe.js"></script>
+        <script src="backoffice/resources/js/app/modules/addprofile.js"></script>
+        <script src="backoffice/resources/js/app/modules/unsubscribereport.js"></script>
+        <script src="backoffice/resources/js/app/modules/certunit.js"></script>
+        <script src="backoffice/resources/js/app/modules/potacommand.js"></script>
+        <script src="backoffice/resources/js/app/modules/certifiedreport.js"></script>
+        <script src="backoffice/resources/js/app/modules/ratify.js"></script>
+        <script src="backoffice/resources/js/app/modules/eventViewer.js"></script>
+        <script src="backoffice/resources/js/app/modules/devicecertifiedreport.js"></script>
+        <script src="backoffice/resources/js/app/modules/loadsimcard.js"></script>
+        <script src="backoffice/resources/js/app/modules/keepalive.js"></script>
+
+        <!-- Controllers -->
+        <script src="backoffice/resources/js/app/controller/customer.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/user.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/devicetype.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/navbar.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/sidebar.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/login.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/device.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/unit.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/midSearchController.js"></script>        
+        <script src="backoffice/resources/js/app/controller/facturationreport.controller.js"></script> 
+        <script src="backoffice/resources/js/app/controller/unsubscribe.controller.js"></script> 
+        <script src="backoffice/resources/js/app/controller/addprofile.controller.js"></script> 
+        <script src="backoffice/resources/js/app/controller/unsubscribereporte.controller.js"></script> 
+        <script src="backoffice/resources/js/app/controller/certunit.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/potacommand.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/certifiedreport.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/ratify.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/eventviewer.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/reportdevicecertified.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/loadsimcard.controller.js"></script>
+        <script src="backoffice/resources/js/app/controller/keepAlive.controller.js"></script>
+
+        <!-- Services -->
+        <script src="backoffice/resources/js/app/services/customer.service.js"></script>
+        <script src="backoffice/resources/js/app/services/accesory.service.js"></script>
+        <script src="backoffice/resources/js/app/services/user.service.js"></script>
+        <script src="backoffice/resources/js/app/services/event.device.service.js"></script>
+        <script src="backoffice/resources/js/app/services/device.service.js"></script>
+        <script src="backoffice/resources/js/app/services/export.xls.js"></script>
+        <script src="backoffice/resources/js/app/services/unit.service.js"></script>
+        <script src="backoffice/resources/js/app/services/facturationreport.service.js"></script>
+        <script src="backoffice/resources/js/app/services/unsubscribe.service.js"></script>
+        <script src="backoffice/resources/js/app/services/potacommand.service.js"></script>
+        <script src="backoffice/resources/js/app/services/ratify.service.js"></script>
+
+        <!-- Factories -->
+        <script src="backoffice/resources/js/app/factories/base.resource.js"></script>
+        <script src="backoffice/resources/js/app/factories/configuration.js"></script>
+
+        <!-- Directives -->
+        <script src="backoffice/resources/js/app/directives/search.report.js"></script>
+        <script src="backoffice/resources/js/app/directives/modal.custom.js"></script>
+        <script src="backoffice/resources/js/app/directives/validator.mails.js"></script>
+        <script src="backoffice/resources/js/app/directives/modal.calenderized.js"></script>
+    </body>
+</html>

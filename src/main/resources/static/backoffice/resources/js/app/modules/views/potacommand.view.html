@@ -1,0 +1,209 @@
+<div class="col-md-12">
+    <div class="navbar bg-primary secondary-nav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white font-entel" href="#">&nbsp;Comandos Pota</a>
+                <button type="button" class="navbar-toggle collapsed boder-white" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only bg-white">Toggle navigation</span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                    <span class="icon-bar bg-white"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+</div>
+<span us-spinner="spinnerconfig" spinner-key="spinner-6"></span>
+<view-search ng-if="filterReport" report="typeReport"></view-search>
+<div class="col-sm-12" ng-show="reportShow">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-primary">
+            <a class="panel-primary no-hover" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <div class="panel-heading">
+                    <h4 class="panel-title"><span ng-if="realm == 'entel'" class="message-important">[ </span>Reporte</h4>
+                </div>
+            </a>                            
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body overflow-y">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">Nombre</th>
+                                <th class="textLeft">Patente</th>
+                                <th class="textLeft">Imei</th>
+                                <th class="textLeft">Ultima Actividad</th>
+                                <th class="textLeft">SimCard</th>
+                                <th class="textLeft">Tipo Dispositivo</th>
+                                <th class="textCenter">Administrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="unit in unidades">
+                                <td align="left">
+                                    {{ unit.name || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.plateNumber || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit._m || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{(unit.dateUnit | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.simcard || "por definir"}}
+                                </td>
+                                <td align="left">
+                                    {{ unit.deviceTypeName || "por definir"}}
+                                </td>
+                                <td align="center">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button type="button" class="btn btn-primary btn-xs pull-center margin-left-10" data-toggle="tooltip" uib-tooltip="Enviar Comando" tooltip-placement="top" ng-click="sendCommand(unit)">
+                                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                        </button> 
+                                        <button type="button" class="btn btn-primary btn-xs pull-center" data-toggle="tooltip" uib-tooltip="Estado envío" tooltip-placement="top" ng-click="searchSentCommand(unit)">
+                                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                        </button> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Historial comandos pota -->
+<modal title="" visible="showModalStatePotaByImei" style="width: 50%; margin-left: 25%;">
+    <uib-alert ng-repeat="alert in alertsCommandSentSearch" ng-show="showAlertSearchingPota" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <div class="row">
+        <div class="panel-body overflow-y" ng-show="reportPotaShow">
+            <form name="potaHistoryTable">
+                <div class="form-group">
+                    <table  datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefsForHistoryPota" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="textLeft">No Referencia</th>
+                                <th class="textLeft">Fecha envio</th>
+                                <th class="textLeft">Fecha respuesta</th>
+                                <th class="textLeft">estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="historyPota in historyPotaList">
+                                <td align="left">
+                                    {{ historyPota.idPotaMsg}}
+                                </td>
+                                <td align="left">
+                                    {{(historyPota.sendDate | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>
+                                <td align="left">
+                                    {{(historyPota.responseDate | date: 'yyyy-MM-dd HH:mm:ss') || "S/I"}}
+                                </td>      
+                                <td align="left" ng-class="{green: historyPota.status == 'ok', red: historyPota.status == 'timeout'}">
+                                    {{ historyPota.status || "S/I"}}
+                                </td>    
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>  
+            </form>
+        </div>
+    </div>    
+</modal>
+
+<!-- Enviar Comando Pota -->
+<modal title="Enviar Comandos Pota" visible="showModalCommand" style="width: 60%; margin-left: 20%;">
+    <span us-spinner="spinnerconfig" spinner-key="spinner-8"></span>
+    <uib-alert ng-repeat="alert in alertsData" ng-show="showAletError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataGet" ng-show="showAletErrorGet" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataList" ng-show="showAletErrorList" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataSend" ng-show="showAletErrorSend" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataSendError" ng-show="showAletErrorSendError" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}</uib-alert>
+    <uib-alert ng-repeat="alert in alertsDataSendTrue" ng-show="showAletSendTrue" type="{{alert.type}}" close="closeAlertError($index)">{{alert.msg}}<strong>{{serialPota}}</strong></uib-alert>
+    <div class="row">
+        <div class="form-group" align="center">
+            <label><h4>Dispositivo: <strong>{{dataModalCommand.name}}</strong> | Imei: <strong>{{dataModalCommand.imei}}</strong></h4></label>
+        </div>
+        <div class="col-md-12">
+            <form name="insertParameters" novalidate>
+                <table class="table table-bordered">
+                    <div class="panel-heading header-info-unit">
+                        <h3 class="panel-title textCenter">Seleccionar Comando</h3>
+                    </div>
+                    <tr>
+                        <td class="active col-xs-4 col-sm-4 col-md-4" style="text-align: right;"><strong>Tipo de Comando:</strong></td>
+                        <td class="col-xs-10 col-sm-10 col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <!--<select name="commandSelected" class="form-control" required></select>-->
+                                <select name="commandSelected" ng-model="dataModalValue.nameCommand" class="form-control" required>
+                                    <option ng-repeat="commandPota in listCommand" value="{{commandPota.commandType}}">{{commandPota.commandType}}</option>
+                                </select>
+                                <div class="error-container">
+                                    <small class="text-muted" ng-show="insertParameters.commandSelected.$error.required">
+                                        Debe seleccionar el comando
+                                    </small>
+                                </div>                                   
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div style="margin-top: -5px; text-align: center;">
+                    <button style="width: 250px; height: 40px;" type="button" class="btn btn-info" ng-click="getCommand()">&nbsp;&nbsp;Ver Comando Seleccionado</button>
+                </div>
+            </form>
+            <form ng-if="showCommand" style="margin-top: 15px;">
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter">Comando</h3>
+                </div>
+                <input style="text-align: center;" type="text" name="commandName" class="form-control" ng-model="commandObject.command" disabled>
+            </form>
+            <form ng-if="showCommandHor" style="margin-top: 15px;">
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter">Designar Horometro</h3>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td> 
+                                <input class="form-control" placeholder="Horas minimas 1 maximas 99999" max="99999" min="1" type="number" ng-model="horoSelected.hourSelected" required>
+                            </td>
+                            <!--<td> 
+                                <input class="form-control" placeholder="Minutos" max="59" min="0" type="number" ng-model="horoSelected.minutesSelected" required>
+                            </td>
+                            <td> 
+                                <input class="form-control" placeholder="Segundos" max="59" min="0" type="number" ng-model="horoSelected.secondsSelected" required>
+                            </td>-->
+                        </tr>
+                    </table>
+                </div>
+            </form>
+            <form ng-if="showCommandOdo" style="margin-top: 15px;">
+                <div class="panel-heading header-info-unit">
+                    <h3 class="panel-title textCenter">Designar Kilometraje</h3>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td> 
+                                <input class="form-control" placeholder="Kilometros  minimos 1" type="text" ng-model="odoSelected.kmSelected" required>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+            <div ng-if="senMessage" class="form-group">
+                <button style="margin-top: 12px;" type="button" class="btn btn-primary pull-right" ng-click="sendPotaCommandForUnit()" ng-disabled="disabledButton">
+                    <span>Enviar Comando</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</modal>
